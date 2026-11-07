@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ДомПлан — дизайн-проект своими руками</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============ ТОКЕНЫ ============ */
+:root{
+  --cream:#faf5ec; --cream2:#f4ecdb; --paper:#fffdf8; --ink:#3d3428; --ink2:#7a6c58;
+  --terra:#d96f4a; --terra-d:#bf5a37; --terra-l:#f3c9b6; --sage:#7fa88f; --sage-d:#5f8a72;
+  --sand:#e8d9c0; --line:#e7dcc9; --amber:#e9a13b; --rose:#d97b6c; --blue:#7ba7c7;
+  --shadow:0 8px 30px rgba(90,70,40,.10); --shadow-sm:0 3px 12px rgba(90,70,40,.08);
+  --r-lg:22px; --r-md:14px; --r-sm:9px;
+  --font:'Nunito',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--cream);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font-family:var(--font);cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:var(--font);font-size:14px;color:var(--ink)}
+::selection{background:var(--terra-l)}
+.hidden{display:none !important}
+
+/* ============ КНОПКИ ============ */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:999px;
+  font-weight:800;font-size:15px;transition:.18s;white-space:nowrap}
+.btn-primary{background:var(--terra);color:#fff;box-shadow:0 6px 18px rgba(217,111,74,.35)}
+.btn-primary:hover{background:var(--terra-d);transform:translateY(-2px)}
+.btn-ghost{background:var(--paper);color:var(--ink);border:2px solid var(--line)}
+.btn-ghost:hover{border-color:var(--terra);color:var(--terra)}
+.btn-soft{background:var(--cream2);color:var(--ink)}
+.btn-soft:hover{background:var(--sand)}
+.btn-sm{padding:8px 16px;font-size:13px}
+.btn-danger{color:#c0442b}
+
+/* ============ ЛЕНДИНГ ============ */
+.landing{overflow-x:hidden}
+.topnav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:14px 48px;background:rgba(250,245,236,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:22px;color:var(--ink)}
+.logo-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--terra),var(--amber));
+  display:grid;place-items:center;color:#fff;font-size:20px;box-shadow:var(--shadow-sm)}
+.nav-links{display:flex;gap:28px;font-weight:700;font-size:14.5px}
+.nav-links a{color:var(--ink2);text-decoration:none;transition:.15s}
+.nav-links a:hover{color:var(--terra)}
+@media(max-width:820px){.nav-links{display:none}.topnav{padding:12px 20px}}
+
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;max-width:1180px;margin:0 auto;padding:72px 40px 60px}
+.hero h1{font-size:clamp(34px,4.6vw,56px);font-weight:900;line-height:1.12;letter-spacing:-.5px}
+.hero h1 em{font-style:normal;color:var(--terra);position:relative}
+.hero p.lead{font-size:18px;color:var(--ink2);margin:22px 0 32px;max-width:520px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+.hero-badges{display:flex;gap:18px;margin-top:34px;font-size:13px;color:var(--ink2);font-weight:700}
+.hero-badges span{display:flex;align-items:center;gap:6px}
+.hero-art{position:relative}
+.hero-card{background:var(--paper);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:18px;transform:rotate(1.5deg)}
+.hero-card svg{width:100%;height:auto;display:block;border-radius:var(--r-md)}
+.hero-tag{position:absolute;background:var(--paper);box-shadow:var(--shadow-sm);border-radius:999px;
+  padding:8px 16px;font-size:13px;font-weight:800}
+.hero-tag.t1{top:-14px;left:-8px;transform:rotate(-4deg);color:var(--sage-d)}
+.hero-tag.t2{bottom:26px;right:-12px;transform:rotate(3deg);color:var(--terra)}
+@media(max-width:900px){.hero{grid-template-columns:1fr;padding:40px 22px}}
+
+.section{max-width:1180px;margin:0 auto;padding:64px 40px}
+.section h2{font-size:clamp(26px,3.2vw,38px);font-weight:900;letter-spacing:-.4px;text-align:center}
+.section .sub{text-align:center;color:var(--ink2);margin:12px auto 42px;max-width:560px;font-size:16px}
+
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+.feat-card{background:var(--paper);border-radius:var(--r-lg);padding:28px 24px;box-shadow:var(--shadow-sm);
+  border:1px solid var(--line);transition:.2s}
+.feat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.feat-ico{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:26px;margin-bottom:16px}
+.feat-card h3{font-size:17px;font-weight:800;margin-bottom:8px}
+.feat-card p{font-size:14px;color:var(--ink2)}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:step}
+@media(max-width:760px){.steps{grid-template-columns:1fr}}
+.step{background:var(--paper);border-radius:var(--r-lg);padding:28px;border:1px dashed var(--sand);position:relative}
+.step::before{counter-increment:step;content:counter(step);position:absolute;top:-16px;left:24px;
+  width:34px;height:34px;border-radius:50%;background:var(--terra);color:#fff;font-weight:900;
+  display:grid;place-items:center;box-shadow:0 4px 10px rgba(217,111,74,.4)}
+.step h3{font-size:16.5px;font-weight:800;margin:6px 0 8px}
+.step p{font-size:14px;color:var(--ink2)}
+
+.beforeafter{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:760px){.beforeafter{grid-template-columns:1fr}}
+.ba-card{border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm);border:1px solid var(--line);background:var(--paper)}
+.ba-card .ba-head{padding:14px 20px;font-weight:800;font-size:14px;display:flex;align-items:center;gap:8px}
+.ba-before .ba-head{background:#f1e3de;color:#a2502f}
+.ba-after .ba-head{background:#e3efe6;color:#487058}
+.ba-card svg{width:100%;display:block}
+
+.pricing{display:grid;grid-template-columns:repeat(2,minmax(280px,380px));gap:24px;justify-content:center}
+@media(max-width:760px){.pricing{grid-template-columns:1fr}}
+.price-card{background:var(--paper);border-radius:var(--r-lg);padding:34px;border:2px solid var(--line);
+  display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow-sm)}
+.price-card.hot{border-color:var(--terra);position:relative;box-shadow:var(--shadow)}
+.price-card.hot::after{content:'Популярный';position:absolute;top:-13px;right:24px;background:var(--terra);
+  color:#fff;font-size:12px;font-weight:800;padding:5px 14px;border-radius:999px}
+.price-name{font-weight:800;font-size:15px;color:var(--ink2);text-transform:uppercase;letter-spacing:1px}
+.price-value{font-size:40px;font-weight:900}
+.price-value small{font-size:15px;color:var(--ink2);font-weight:700}
+.price-list{list-style:none;margin:16px 0 22px;display:flex;flex-direction:column;gap:10px;font-size:14.5px;color:var(--ink2)}
+.price-list li::before{content:'✓';color:var(--sage-d);font-weight:900;margin-right:8px}
+.price-list li.no{color:#b9ac97}.price-list li.no::before{content:'—';color:#d8cdb9}
+
+.final-cta{text-align:center;background:linear-gradient(160deg,#fbe9dc,#f6e7cf);border-radius:var(--r-lg);
+  margin:40px auto;max-width:1100px;padding:64px 30px}
+.final-cta h2{font-size:clamp(26px,3.4vw,40px);font-weight:900;margin-bottom:14px}
+.final-cta p{color:var(--ink2);margin-bottom:28px}
+footer{border-top:1px solid var(--line);padding:28px 40px;text-align:center;color:var(--ink2);font-size:13.5px}
+
+/* ============ РЕДАКТОР: КАРКАС ============ */
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.app-topbar{display:flex;align-items:center;gap:14px;padding:10px 16px;background:var(--paper);
+  border-bottom:1px solid var(--line);flex-shrink:0;z-index:20}
+.app-topbar .logo{font-size:18px;cursor:pointer}
+.app-topbar .logo-mark{width:32px;height:32px;font-size:16px;border-radius:10px}
+.proj-name{border:2px solid transparent;background:var(--cream);border-radius:10px;padding:7px 12px;
+  font-weight:800;font-size:14px;width:220px;transition:.15s}
+.proj-name:hover,.proj-name:focus{border-color:var(--line);background:var(--paper);outline:none}
+.save-state{font-size:12px;color:var(--ink2);font-weight:700;min-width:110px}
+.topbar-spacer{flex:1}
+
+.workspace{display:flex;flex:1;min-height:0}
+
+/* левая панель вкладок */
+.rail{width:74px;background:var(--paper);border-right:1px solid var(--line);display:flex;flex-direction:column;
+  align-items:stretch;padding:10px 8px;gap:6px;flex-shrink:0;overflow-y:auto}
+.rail-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border-radius:14px;
+  font-size:11px;font-weight:800;color:var(--ink2);transition:.15s;border:2px solid transparent}
+.rail-btn .ico{font-size:21px;line-height:1}
+.rail-btn:hover{background:var(--cream)}
+.rail-btn.active{background:#fbe9dc;color:var(--terra-d);border-color:var(--terra-l)}
+.rail-sep{height:1px;background:var(--line);margin:4px 6px}
+
+/* контекстная панель */
+.panel{width:264px;background:var(--paper);border-right:1px solid var(--line);overflow-y:auto;flex-shrink:0;
+  padding:18px 16px;display:flex;flex-direction:column;gap:14px}
+.panel h3{font-size:15px;font-weight:900}
+.panel .hint{font-size:12.5px;color:var(--ink2);background:var(--cream);border-radius:var(--r-sm);
+  padding:10px 12px;line-height:1.45}
+.tool-list{display:flex;flex-direction:column;gap:8px}
+.tool-btn{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:var(--r-md);
+  border:2px solid var(--line);background:var(--paper);font-weight:800;font-size:13.5px;text-align:left;transition:.15s}
+.tool-btn:hover{border-color:var(--terra-l);background:#fdf6ee}
+.tool-btn.active{border-color:var(--terra);background:#fbe9dc;color:var(--terra-d)}
+.tool-btn .ico{font-size:19px;width:26px;text-align:center}
+.tool-btn small{display:block;font-weight:600;color:var(--ink2);font-size:11px}
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.field{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:800;color:var(--ink2)}
+.field input,.field select{padding:9px 11px;border:2px solid var(--line);border-radius:var(--r-sm);
+  background:var(--paper);font-weight:700;outline:none;transition:.15s}
+.field input:focus,.field select:focus{border-color:var(--terra)}
+.seg{display:flex;background:var(--cream);border-radius:var(--r-sm);padding:3px;gap:3px}
+.seg button{flex:1;padding:8px 4px;border-radius:7px;font-size:12px;font-weight:800;color:var(--ink2)}
+.seg button.active{background:var(--paper);color:var(--terra-d);box-shadow:var(--shadow-sm)}
+.swatches{display:flex;flex-wrap:wrap;gap:8px}
+.swatch{width:30px;height:30px;border-radius:9px;border:2px solid rgba(0,0,0,.08);cursor:pointer;transition:.12s}
+.swatch:hover{transform:scale(1.12)}
+.swatch.active{border-color:var(--ink);transform:scale(1.12);box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ink)}
+.panel-actions{margin-top:auto;display:flex;flex-direction:column;gap:8px}
+.layer-row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:var(--r-sm);
+  background:var(--cream);font-weight:800;font-size:13.5px}
+.switch{position:relative;width:42px;height:24px;border-radius:999px;background:#ddd2bd;transition:.2s;cursor:pointer;flex-shrink:0}
+.switch::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;
+  transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.switch.on{background:var(--sage)}
+.switch.on::after{left:21px}
+
+/* сцена с канвасом */
+.stage{flex:1;position:relative;background:
+  radial-gradient(circle at 30% 20%, #fdf9f1, var(--cream));min-width:0}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.stage-tools{position:absolute;top:14px;right:14px;display:flex;flex-direction:column;gap:8px;z-index:5}
+.stage-btn{width:40px;height:40px;border-radius:12px;background:var(--paper);box-shadow:var(--shadow-sm);
+  border:1px solid var(--line);font-size:17px;font-weight:800;display:grid;place-items:center;transition:.15s}
+.stage-btn:hover{background:var(--cream2)}
+.hintbar{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:rgba(61,52,40,.92);
+  color:#fdf6ea;padding:9px 20px;border-radius:999px;font-size:13px;font-weight:700;pointer-events:none;
+  max-width:88%;text-align:center;z-index:5;transition:opacity .2s}
+.chip{position:absolute;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+  box-shadow:var(--shadow-sm);padding:8px 10px;display:flex;align-items:center;gap:6px;z-index:6}
+.chip input{width:72px;border:none;background:var(--cream);border-radius:6px;padding:5px 7px;font-weight:800;text-align:center;outline:none}
+.chip .u{font-size:12px;font-weight:800;color:var(--ink2)}
+
+/* виды: 3D / смета / каталог */
+.view{position:absolute;inset:0;display:none;flex-direction:column;background:var(--cream)}
+.view.active{display:flex}
+.view-head{display:flex;align-items:center;gap:14px;padding:12px 20px;background:var(--paper);border-bottom:1px solid var(--line)}
+.view-head h2{font-size:17px;font-weight:900}
+.view-body{flex:1;overflow:auto;padding:22px}
+#gl{flex:1;min-height:0}
+.view-3d-note{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:rgba(61,52,40,.92);
+  color:#fdf6ea;padding:9px 20px;border-radius:999px;font-size:13px;font-weight:700;pointer-events:none}
+
+/* смета */
+.est-wrap{max-width:980px;margin:0 auto;background:var(--paper);border-radius:var(--r-lg);
+  box-shadow:var(--shadow-sm);border:1px solid var(--line);overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{background:var(--cream2);text-align:left;padding:12px 16px;font-size:12px;text-transform:uppercase;
+  letter-spacing:.6px;color:var(--ink2)}
+td{padding:10px 16px;border-top:1px solid var(--line)}
+tr.sec td{background:#f7f0e2;font-weight:900;color:var(--terra-d)}
+td.num,th.num{text-align:right;white-space:nowrap}
+td input.price{width:86px;padding:6px 8px;border:1.5px solid var(--line);border-radius:7px;text-align:right;font-weight:700}
+td input.price:focus{border-color:var(--terra);outline:none}
+.est-total{display:flex;justify-content:flex-end;gap:26px;align-items:baseline;padding:18px 22px;
+  background:var(--ink);color:#fdf6ea}
+.est-total .lbl{font-weight:700;opacity:.8}
+.est-total .val{font-size:26px;font-weight:900}
+
+/* каталог */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:18px;max-width:1100px;margin:0 auto}
+.prod{background:var(--paper);border-radius:var(--r-lg);border:1px solid var(--line);overflow:hidden;
+  box-shadow:var(--shadow-sm);transition:.18s;display:flex;flex-direction:column}
+.prod:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.prod-img{height:120px;display:grid;place-items:center;font-size:52px}
+.prod-body{padding:14px 16px;display:flex;flex-direction:column;gap:5px;flex:1}
+.prod-cat{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--ink2)}
+.prod-name{font-weight:800;font-size:14px;line-height:1.3}
+.prod-price{font-weight:900;font-size:16px;color:var(--terra-d);margin-top:auto;padding-top:8px}
+.prod-link{font-size:12px;color:var(--blue);font-weight:700;text-decoration:none}
+.prod-link:hover{text-decoration:underline}
+.cat-note{max-width:1100px;margin:0 auto 18px;background:#fdf3e3;border:1px dashed var(--amber);
+  border-radius:var(--r-md);padding:12px 18px;font-size:13.5px;color:#8a6420}
+
+/* модалки */
+.overlay{position:fixed;inset:0;background:rgba(61,52,40,.45);display:grid;place-items:center;z-index:100;
+  backdrop-filter:blur(3px)}
+.modal{background:var(--paper);border-radius:var(--r-lg);box-shadow:var(--shadow);max-width:640px;width:92%;
+  max-height:86vh;overflow:auto;padding:28px}
+.modal h2{font-size:20px;font-weight:900;margin-bottom:6px}
+.modal .sub2{color:var(--ink2);font-size:14px;margin-bottom:18px}
+.tpl-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.tpl-card{border:2px solid var(--line);border-radius:var(--r-md);padding:14px;cursor:pointer;transition:.15s;background:var(--paper)}
+.tpl-card:hover{border-color:var(--terra);background:#fdf6ee}
+.tpl-card svg{width:100%;height:auto;display:block;background:var(--cream);border-radius:8px}
+.tpl-card h4{font-size:14px;font-weight:800;margin-top:10px}
+.tpl-card p{font-size:12px;color:var(--ink2)}
+.proj-row{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1.5px solid var(--line);
+  border-radius:var(--r-md);margin-bottom:10px;transition:.15s}
+.proj-row:hover{border-color:var(--terra-l)}
+.proj-row .nm{font-weight:800;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.proj-row .dt{font-size:12px;color:var(--ink2);white-space:nowrap}
+.modal-x{position:absolute;top:14px;right:16px;font-size:22px;color:var(--ink2);width:36px;height:36px;
+  border-radius:50%;display:grid;place-items:center}
+.modal-x:hover{background:var(--cream)}
+
+/* онбординг */
+.tour-dots{display:flex;gap:8px;justify-content:center;margin:18px 0}
+.tour-dots i{width:9px;height:9px;border-radius:50%;background:var(--sand)}
+.tour-dots i.on{background:var(--terra)}
+.tour-emoji{font-size:64px;text-align:center;margin-bottom:14px}
+
+/* тост */
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);
+  color:#fdf6ea;padding:12px 24px;border-radius:999px;font-weight:800;font-size:14px;opacity:0;
+  transition:.25s;z-index:200;pointer-events:none}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* печать (экспорт плана/сметы для строителей) */
+@media print{
+  body *{visibility:hidden}
+  #printArea,#printArea *{visibility:visible}
+  #printArea{position:absolute;inset:0;display:block !important;background:#fff;padding:20px}
+}
+#printArea{display:none}
+
+@media(max-width:1100px){
+  .panel{width:220px;padding:16px 12px}
+  .rail{width:66px}
+  .view-head{flex-wrap:wrap;row-gap:8px;padding:10px 16px}
+  .view-head>span{display:none}
+  .view-head h2{font-size:16px}
+  .proj-name{width:160px}
+  .save-state{min-width:0}
+}
+@media(min-width:1100px){.view-head>span{font-size:12px}}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--sand);border-radius:99px;border:2px solid var(--paper)}
+::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+
+<!-- ================= ЛЕНДИНГ ================= -->
+<div id="landing" class="landing">
+  <nav class="topnav">
+    <div class="logo"><span class="logo-mark">⌂</span>ДомПлан</div>
+    <div class="nav-links">
+      <a href="#features">Возможности</a>
+      <a href="#how">Как это работает</a>
+      <a href="#examples">Примеры</a>
+      <a href="#pricing">Тарифы</a>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="App.enterEditor()">Начать бесплатно</button>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <h1>Дизайн-проект квартиры <em>своими руками</em></h1>
+      <p class="lead">Нарисуйте план, расставьте мебель, электрику и сантехнику, посмотрите результат в 3D и получите смету — без дизайнера и сложных программ.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="App.enterEditor()">Открыть планировщик →</button>
+        <button class="btn btn-ghost" onclick="App.enterEditor(true)">Посмотреть демо-проект</button>
+      </div>
+      <div class="hero-badges">
+        <span>✓ Без установки</span><span>✓ Без регистрации</span><span>✓ План за 15 минут</span>
+      </div>
+    </div>
+    <div class="hero-art">
+      <span class="hero-tag t1">🧊 3D-вид одной кнопкой</span>
+      <span class="hero-tag t2">💰 Смета автоматически</span>
+      <div class="hero-card">
+        <svg viewBox="0 0 420 300" role="img" aria-label="Пример плана квартиры">
+          <rect width="420" height="300" fill="#f4ecdb"/>
+          <g stroke="#e0d2b6" stroke-width="1">
+            <path d="M0 30H420M0 60H420M0 90H420M0 120H420M0 150H420M0 180H420M0 210H420M0 240H420M0 270H420"/>
+            <path d="M30 0V300M60 0V300M90 0V300M120 0V300M150 0V300M180 0V300M210 0V300M240 0V300M270 0V300M300 0V300M330 0V300M360 0V300M390 0V300"/>
+          </g>
+          <rect x="60" y="45" width="300" height="210" fill="#fdf8ee" stroke="#3d3428" stroke-width="10"/>
+          <line x1="60" y1="150" x2="230" y2="150" stroke="#3d3428" stroke-width="6"/>
+          <line x1="230" y1="45" x2="230" y2="105" stroke="#3d3428" stroke-width="6"/>
+          <line x1="230" y1="165" x2="230" y2="255" stroke="#3d3428" stroke-width="6" stroke-dasharray="8 6" stroke="#c0442b"/>
+          <g stroke="#3d3428" stroke-width="3" fill="none">
+            <path d="M150 45 A55 55 0 0 1 205 100"/><line x1="150" y1="45" x2="205" y2="45" stroke-width="6"/>
+            <path d="M285 255 A50 50 0 0 0 285 205"/><line x1="285" y1="205" x2="285" y2="255" stroke-width="6"/>
+          </g>
+          <g stroke="#7ba7c7" stroke-width="4"><line x1="300" y1="45" x2="348" y2="45"/></g>
+          <rect x="78" y="165" width="95" height="72" rx="8" fill="#7fa88f" opacity=".85"/>
+          <rect x="78" y="165" width="20" height="72" rx="8" fill="#5f8a72"/>
+          <rect x="90" y="60" width="55" height="70" rx="7" fill="#d96f4a" opacity=".85"/>
+          <rect x="90" y="60" width="55" height="16" rx="7" fill="#bf5a37"/>
+          <circle cx="330" cy="225" r="16" fill="#7fa88f"/><circle cx="330" cy="225" r="9" fill="#a5c4ae"/>
+          <rect x="250" y="60" width="90" height="45" rx="6" fill="#e8d9c0"/>
+          <text x="155" y="142" font-family="Nunito" font-size="11" font-weight="800" fill="#7a6c58">СПАЛЬНЯ 12 м²</text>
+          <text x="252" y="142" font-family="Nunito" font-size="11" font-weight="800" fill="#c0442b">демонтаж</text>
+          <text x="250" y="240" font-family="Nunito" font-size="11" font-weight="800" fill="#7a6c58">КУХНЯ-ГОСТИНАЯ</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <h2>Что вы получите</h2>
+    <p class="sub">Полный набор документов для ремонта — как от дизайнера, только бесплатно и за один вечер.</p>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="feat-ico" style="background:#fbe9dc">📐</div><h3>План и перепланировка</h3><p>Стены, двери, окна. Отметьте стены под демонтаж и монтаж — получите план перепланировки для бригады.</p></div>
+      <div class="feat-card"><div class="feat-ico" style="background:#e3efe6">🛋️</div><h3>Расстановка мебели</h3><p>Библиотека типовой мебели с реальными размерами. Перетаскивайте, поворачивайте, меняйте габариты.</p></div>
+      <div class="feat-card"><div class="feat-ico" style="background:#e8eef5">⚡</div><h3>Электрика и сантехника</h3><p>Планы розеток, выключателей и точек воды — покажите электрику и сантехнику без объяснений на пальцах.</p></div>
+      <div class="feat-card"><div class="feat-ico" style="background:#f3e8f5">🧊</div><h3>3D-визуализация</h3><p>Пройдитесь по своей квартире в объёме: стены, пол, мебель. Поймите, как будет выглядеть дом.</p></div>
+      <div class="feat-card"><div class="feat-ico" style="background:#fdf3e3">💰</div><h3>Смета автоматически</h3><p>Сервис сам считает материалы и работы по вашему плану. Цены можно поправить под свой город.</p></div>
+      <div class="feat-card"><div class="feat-ico" style="background:#fdeaea">🛍️</div><h3>Список покупок</h3><p>Каждый материал привязан к конкретному товару в каталоге — переходите в магазин и покупайте.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="how" style="padding-top:0">
+    <h2>Как это работает</h2>
+    <p class="sub">Три простых шага — и у вас готовый проект.</p>
+    <div class="steps">
+      <div class="step"><h3>Нарисуйте план</h3><p>Начните с шаблона типовой квартиры или начертите стены сами — просто вводите размеры в сантиметрах.</p></div>
+      <div class="step"><h3>Обставьте и разместите точки</h3><p>Расставьте мебель, розетки, выключатели и сантехнику. Всё двигается мышкой, как в игре.</p></div>
+      <div class="step"><h3>Посмотрите 3D и смету</h3><p>Одна кнопка — и вы внутри квартиры. Вторая — и у вас смета со списком товаров для покупки.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="examples" style="padding-top:0">
+    <h2>До и после</h2>
+    <p class="sub">Из «квартиры от бабушки» — в продуманное пространство.</p>
+    <div class="beforeafter">
+      <div class="ba-card ba-before">
+        <div class="ba-head">😰 До: узкая кухня и тёмная прихожая</div>
+        <svg viewBox="0 0 400 190"><rect width="400" height="190" fill="#f1e3de"/>
+          <rect x="30" y="30" width="340" height="130" fill="#faf3ea" stroke="#8a6a55" stroke-width="8"/>
+          <line x1="200" y1="30" x2="200" y2="160" stroke="#8a6a55" stroke-width="8"/>
+          <rect x="50" y="45" width="30" height="100" fill="#c9b8a0"/><rect x="230" y="45" width="120" height="40" fill="#c9b8a0"/>
+          <text x="80" y="185" font-family="Nunito" font-size="12" font-weight="800" fill="#a2502f">кухня 6 м² • комната-пенал • ни одной розетки у дивана</text>
+        </svg>
+      </div>
+      <div class="ba-card ba-after">
+        <div class="ba-head">😍 После: кухня-гостиная с островом</div>
+        <svg viewBox="0 0 400 190"><rect width="400" height="190" fill="#e3efe6"/>
+          <rect x="30" y="30" width="340" height="130" fill="#fdf8ee" stroke="#487058" stroke-width="8"/>
+          <line x1="200" y1="30" x2="200" y2="160" stroke="#c0442b" stroke-width="5" stroke-dasharray="9 6"/>
+          <rect x="60" y="50" width="80" height="95" rx="8" fill="#7fa88f"/><rect x="230" y="60" width="110" height="45" rx="6" fill="#e8d9c0"/>
+          <rect x="275" y="115" width="46" height="30" rx="5" fill="#d96f4a"/>
+          <circle cx="350" cy="140" r="13" fill="#7fa88f"/>
+          <text x="70" y="185" font-family="Nunito" font-size="12" font-weight="800" fill="#487058">стена под демонтаж • остров • розетки у каждого спального места</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pricing" style="padding-top:0">
+    <h2>Тарифы</h2>
+    <p class="sub">Начните бесплатно. Платите, только если сервис пришёлся по душе.</p>
+    <div class="pricing">
+      <div class="price-card">
+        <div class="price-name">Бесплатный</div>
+        <div class="price-value">0 ₸</div>
+        <ul class="price-list">
+          <li>1 проект</li><li>2D-планировщик и мебель</li><li>Электрика и сантехника</li>
+          <li>3D-визуализация</li><li>Базовый каталог</li>
+          <li class="no">Экспорт сметы и планов</li>
+        </ul>
+        <button class="btn btn-ghost" onclick="App.enterEditor()">Начать бесплатно</button>
+      </div>
+      <div class="price-card hot">
+        <div class="price-name">Полный</div>
+        <div class="price-value">490 ₸ <small>/ мес</small></div>
+        <ul class="price-list">
+          <li>Безлимит проектов</li><li>Всё из бесплатного тарифа</li>
+          <li>Экспорт планов и сметы (PNG, PDF, CSV)</li>
+          <li>Расширенный каталог товаров</li><li>Приоритетная поддержка</li>
+        </ul>
+        <button class="btn btn-primary" onclick="App.enterEditor()">Попробовать</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="final-cta">
+    <h2>Ваш ремонт начинается с плана</h2>
+    <p>Пятнадцать минут в ДомПлане сэкономят недели переделок и сотни тысяч тенге.</p>
+    <button class="btn btn-primary" style="font-size:17px;padding:16px 36px" onclick="App.enterEditor()">Создать проект →</button>
+  </div>
+
+  <footer>
+    ДомПлан © 2026 · Сделано с теплом для тех, кто делает ремонт сам ·
+    Планы перепланировки требуют согласования в установленном порядке
+  </footer>
+</div>
+
+<!-- ================= РЕДАКТОР ================= -->
+<div id="app" class="app hidden">
+  <header class="app-topbar">
+    <div class="logo" onclick="App.goHome()" title="На главную"><span class="logo-mark">⌂</span>ДомПлан</div>
+    <input class="proj-name" id="projName" value="Мой проект" maxlength="60">
+    <span class="save-state" id="saveState">✓ Сохранено</span>
+    <div class="topbar-spacer"></div>
+    <button class="btn btn-soft btn-sm" id="btnProjects">📁 Проекты</button>
+    <button class="btn btn-soft btn-sm" id="btnHelp">❓ Обучение</button>
+    <button class="btn btn-primary btn-sm" id="btnExportTop">⬇ Экспорт</button>
+  </header>
+
+  <div class="workspace">
+    <nav class="rail" id="rail"></nav>
+    <aside class="panel" id="panel"></aside>
+    <main class="stage">
+      <canvas id="cv"></canvas>
+      <div class="stage-tools">
+        <button class="stage-btn" id="zoomIn" title="Приблизить">+</button>
+        <button class="stage-btn" id="zoomOut" title="Отдалить">−</button>
+        <button class="stage-btn" id="zoomFit" title="Показать весь план">⌂</button>
+        <button class="stage-btn" id="btnUndo" title="Отменить (Ctrl+Z)">↶</button>
+        <button class="stage-btn" id="btnRedo" title="Повторить (Ctrl+Y)">↷</button>
+      </div>
+      <div class="hintbar" id="hintbar">Выберите инструмент слева</div>
+
+      <!-- 3D вид -->
+      <div class="view" id="view3d">
+        <div class="view-head">
+          <h2>🧊 3D-вид</h2>
+          <span style="color:var(--ink2);font-size:13px;font-weight:700">Поворачивайте мышкой · колесо — зум · правая кнопка — сдвиг</span>
+          <div class="topbar-spacer"></div>
+          <button class="btn btn-soft btn-sm" id="btn3dBack">← К плану</button>
+        </div>
+        <div id="gl"></div>
+      </div>
+
+      <!-- Смета -->
+      <div class="view" id="viewEstimate">
+        <div class="view-head">
+          <h2>💰 Смета расходов</h2>
+          <span style="color:var(--ink2);font-size:13px;font-weight:700">Считается автоматически по плану · цены можно менять</span>
+          <div class="topbar-spacer"></div>
+          <button class="btn btn-soft btn-sm" id="btnEstCsv">⬇ CSV</button>
+          <button class="btn btn-soft btn-sm" id="btnEstPrint">🖨 Печать / PDF</button>
+          <button class="btn btn-soft btn-sm" id="btnEstBack">← К плану</button>
+        </div>
+        <div class="view-body"><div class="est-wrap" id="estTable"></div></div>
+      </div>
+
+      <!-- Каталог -->
+      <div class="view" id="viewCatalog">
+        <div class="view-head">
+          <h2>🛍️ Каталог товаров</h2>
+          <span style="color:var(--ink2);font-size:13px;font-weight:700">Что купить для вашего проекта</span>
+          <div class="topbar-spacer"></div>
+          <button class="btn btn-soft btn-sm" id="btnCatBack">← К плану</button>
+        </div>
+        <div class="view-body">
+          <div class="cat-note">💡 Демо-каталог: товары и цены примерные, ссылки — заглушки. В полной версии здесь будут реальные предложения магазинов-партнёров.</div>
+          <div class="cat-grid" id="catGrid"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- модалки -->
+<div id="overlayRoot"></div>
+<div id="toast"></div>
+<div id="printArea"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.146.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.146.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+'use strict';
+/* =====================================================================
+   ДомПлан — ядро: данные, состояние, хранилище, шаблоны, каталог
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const uid = () => Math.random().toString(36).slice(2, 10);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+const fmt = n => (Math.round(n)).toLocaleString('ru-RU');
+const round5 = v => Math.round(v / 5) * 5;             // шаг размеров — 5 см
+const segLen = s => dist(s.a, s.b);
+const PT_DIST_EPS = 0.1;
+
+function segMidOff(s, off = 0) { // точка на отрезке со смещением от середины вдоль стены
+  const m = mid(s.a, s.b), d = dist(s.a, s.b) || 1;
+  const ux = (s.b.x - s.a.x) / d, uy = (s.b.y - s.a.y) / d;
+  return { x: m.x + ux * off, y: m.y + uy * off, ux, uy };
+}
+
+/* ---------- Каталоги редактора ---------- */
+const FURNITURE = [
+  { t: 'sofa',      n: 'Диван',            ico: '🛋️', w: 200, h: 90,  c: '#7fa88f', cat: 'Гостиная' },
+  { t: 'armchair',  n: 'Кресло',           ico: '🪑', w: 90,  h: 90,  c: '#8fb79e', cat: 'Гостиная' },
+  { t: 'tvstand',   n: 'ТВ-тумба',         ico: '📺', w: 160, h: 45,  c: '#b9a184', cat: 'Гостиная' },
+  { t: 'table',     n: 'Обеденный стол',   ico: '🍽️', w: 140, h: 80,  c: '#d9b98f', cat: 'Гостиная' },
+  { t: 'bed160',    n: 'Кровать 160',      ico: '🛏️', w: 160, h: 200, c: '#d96f4a', cat: 'Спальня' },
+  { t: 'bed90',     n: 'Кровать 90',       ico: '🛏️', w: 90,  h: 200, c: '#e08a68', cat: 'Спальня' },
+  { t: 'wardrobe',  n: 'Шкаф',             ico: '🚪', w: 150, h: 60,  c: '#a8b8d0', cat: 'Спальня' },
+  { t: 'desk',      n: 'Рабочий стол',     ico: '💻', w: 120, h: 60,  c: '#d9b98f', cat: 'Спальня' },
+  { t: 'kitchen',   n: 'Кухонный гарнитур',ico: '🍳', w: 240, h: 60,  c: '#e8d9c0', cat: 'Кухня' },
+  { t: 'fridge',    n: 'Холодильник',      ico: '🧊', w: 60,  h: 60,  c: '#cfd8dc', cat: 'Кухня' },
+  { t: 'washer',    n: 'Стиральная машина',ico: '🧺', w: 60,  h: 60,  c: '#cfd8dc', cat: 'Ванная' },
+  { t: 'plant',     n: 'Растение',         ico: '🪴', w: 40,  h: 40,  c: '#7fa88f', round: true, cat: 'Декор' },
+  { t: 'carpet',    n: 'Ковёр',            ico: '🟫', w: 200, h: 140, c: '#e9d3b6', soft: true, cat: 'Декор' },
+];
+const ELECTRICS = [
+  { t: 'socket',  n: 'Розетка',           ico: '🔌', sym: '◉' },
+  { t: 'socket2', n: 'Двойная розетка',   ico: '🔌', sym: '◉◉' },
+  { t: 'switch',  n: 'Выключатель',       ico: '💡', sym: '⊘' },
+  { t: 'lamp',    n: 'Светильник',        ico: '💡', sym: '☀' },
+  { t: 'panel',   n: 'Электрощит',        ico: '⚡', sym: '▣' },
+];
+const PLUMBING = [
+  { t: 'sink',    n: 'Раковина',          ico: '🚰', sym: '◍' },
+  { t: 'bath',    n: 'Ванна',             ico: '🛁', sym: '▭' },
+  { t: 'shower',  n: 'Душ',               ico: '🚿', sym: '◈' },
+  { t: 'wc',      n: 'Унитаз',            ico: '🚽', sym: '⊙' },
+  { t: 'water',   n: 'Подвод воды',       ico: '💧', sym: '●' },
+  { t: 'sewer',   n: 'Канализация',       ico: '🕳️', sym: '◎' },
+];
+const WALL_TYPES = {
+  existing:   { n: 'Существующая',    color: '#3d3428' },
+  demolition: { n: 'Под демонтаж',    color: '#c0442b' },
+  new:        { n: 'Под монтаж',      color: '#4f8a63' },
+};
+const WALL_PRESETS = [
+  { th: 10, kind: 'partition', n: 'Перегородка 10 см' },
+  { th: 20, kind: 'load',      n: 'Несущая 20 см' },
+  { th: 30, kind: 'load',      n: 'Несущая 30 см' },
+];
+const WALL_COLORS = ['#f5efe4', '#f3e3d3', '#e9dfd0', '#dfe8dd', '#dce6ee', '#efe2e8', '#f0e6c8', '#e2ddd6'];
+const FLOOR_TYPES = [
+  { id: 'laminate', n: 'Ламинат дуб',     c: '#d9bd93' },
+  { id: 'lam_dark', n: 'Ламинат орех',    c: '#a5825e' },
+  { id: 'tile',     n: 'Плитка светлая',  c: '#e4e0d6' },
+  { id: 'tile_dk',  n: 'Плитка графит',   c: '#9a9a94' },
+  { id: 'lino',     n: 'Линолеум',        c: '#d5c9ae' },
+];
+
+/* ---------- Демо-каталог товаров (этап 1 — заглушки) ---------- */
+const CATALOG = [
+  { id: 'p1',  cat: 'Стены',       name: 'Краска интерьерная «Домашняя», 9 л',       price: 4200,  img: '🪣', bg: '#fbe9dc', shop: 'СтройМаркет' },
+  { id: 'p2',  cat: 'Стены',       name: 'Обои флизелиновые «Сканди», рулон',        price: 1890,  img: '🧻', bg: '#f3e8f5', shop: 'ОбоиДом' },
+  { id: 'p3',  cat: 'Пол',         name: 'Ламинат 33 класс «Дуб натур», м²',         price: 1450,  img: '🪵', bg: '#fdf3e3', shop: 'Полы&Ко' },
+  { id: 'p4',  cat: 'Пол',         name: 'Плитка керамогранит 60×60, м²',            price: 1780,  img: '⬜', bg: '#e8eef5', shop: 'КерамикаПлюс' },
+  { id: 'p5',  cat: 'Электрика',   name: 'Розетка скрытой установки с заземлением',  price: 320,   img: '🔌', bg: '#e3efe6', shop: 'ЭлектроМир' },
+  { id: 'p6',  cat: 'Электрика',   name: 'Выключатель одноклавишный',                price: 280,   img: '💡', bg: '#e3efe6', shop: 'ЭлектроМир' },
+  { id: 'p7',  cat: 'Электрика',   name: 'Кабель ВВГнг 3×2.5, метр',                 price: 95,    img: '➰', bg: '#e3efe6', shop: 'ЭлектроМир' },
+  { id: 'p8',  cat: 'Сантехника',  name: 'Смеситель для раковины «Аква»',            price: 5600,  img: '🚰', bg: '#e8f0f7', shop: 'СанТехДом' },
+  { id: 'p9',  cat: 'Сантехника',  name: 'Унитаз подвесной с инсталляцией',          price: 18900, img: '🚽', bg: '#e8f0f7', shop: 'СанТехДом' },
+  { id: 'p10', cat: 'Сантехника',  name: 'Душевая кабина 90×90 «Лайт»',              price: 32400, img: '🚿', bg: '#e8f0f7', shop: 'СанТехДом' },
+  { id: 'p11', cat: 'Мебель',      name: 'Диван прямой «Комфорт», 200 см',           price: 38900, img: '🛋️', bg: '#e3efe6', shop: 'МебельСити' },
+  { id: 'p12', cat: 'Мебель',      name: 'Кровать с подъёмным механизмом 160×200',   price: 29700, img: '🛏️', bg: '#fbe9dc', shop: 'МебельСити' },
+  { id: 'p13', cat: 'Мебель',      name: 'Кухонный гарнитур «Лайн», 240 см',         price: 54900, img: '🍳', bg: '#fdf3e3', shop: 'КухниПро' },
+  { id: 'p14', cat: 'Мебель',      name: 'Шкаф-купе 150 см',                         price: 26900, img: '🚪', bg: '#e8eef5', shop: 'МебельСити' },
+  { id: 'p15', cat: 'Стены/работы',name: 'ГКЛ влагостойкий 2500×1200, лист',         price: 640,   img: '📄', bg: '#f4ecdb', shop: 'СтройМаркет' },
+  { id: 'p16', cat: 'Стены/работы',name: 'Профиль направляющий ПН 50×40, 3 м',       price: 310,   img: '📏', bg: '#f4ecdb', shop: 'СтройМаркет' },
+];
+const FURN_PRODUCT = { sofa: 'p11', armchair: 'p11', bed160: 'p12', bed90: 'p12', kitchen: 'p13', wardrobe: 'p14' };
+
+/* ---------- Прайс работ и материалов (редактируется в смете) ---------- */
+const DEFAULT_PRICES = {
+  demount:        { label: 'Демонтаж перегородки',            unit: 'м.п.',  price: 450  },
+  mount:          { label: 'Монтаж перегородки (ГКЛ+профиль)',unit: 'м.п.',  price: 1800 },
+  paint:          { label: 'Краска интерьерная',              unit: 'м²',    price: 470  },
+  paintWork:      { label: 'Покраска стен (работа)',          unit: 'м²',    price: 350  },
+  floor:          { label: 'Ламинат / покрытие',              unit: 'м²',    price: 1450 },
+  floorWork:      { label: 'Укладка покрытия (работа)',       unit: 'м²',    price: 600  },
+  socket:         { label: 'Розетка с установкой',            unit: 'шт.',   price: 850  },
+  socket2:        { label: 'Розетка двойная с установкой',    unit: 'шт.',   price: 1250 },
+  switch:         { label: 'Выключатель с установкой',        unit: 'шт.',   price: 700  },
+  lamp:           { label: 'Светильник с монтажом',           unit: 'шт.',   price: 1500 },
+  panel:          { label: 'Электрощит (сборка и монтаж)',    unit: 'шт.',   price: 9500 },
+  cableM:         { label: 'Кабель и штробление',             unit: 'м.п.',  price: 350  },
+  sink:           { label: 'Установка раковины',              unit: 'шт.',   price: 3800 },
+  bath:           { label: 'Установка ванны',                 unit: 'шт.',   price: 8500 },
+  shower:         { label: 'Монтаж душевой',                  unit: 'шт.',   price: 9500 },
+  wc:             { label: 'Установка унитаза',               unit: 'шт.',   price: 4200 },
+  washerPlumb:    { label: 'Подключение стиральной машины',   unit: 'шт.',   price: 2500 },
+  waterPoint:     { label: 'Точка подвода воды/канализации',  unit: 'шт.',   price: 3200 },
+};
+
+/* =====================================================================
+   Состояние проекта и хранилище
+   ===================================================================== */
+const Store = {
+  key: 'domplan.projects.v1',
+  all() { try { return JSON.parse(localStorage.getItem(this.key)) || {}; } catch { return {}; } },
+  saveAll(p) { try { localStorage.setItem(this.key, JSON.stringify(p)); } catch {} },
+  save(proj) { const a = this.all(); a[proj.id] = proj; this.saveAll(a); },
+  remove(id) { const a = this.all(); delete a[id]; this.saveAll(a); },
+};
+
+function newProject(name) {
+  return {
+    id: uid(), name: name || 'Мой проект',
+    createdAt: Date.now(), updatedAt: Date.now(),
+    walls: [],        // {id, a:{x,y}, b:{x,y}, th, kind, state, openings:[{id,type,off,w}]}
+    furniture: [],    // {id,t,x,y,rot,w,h,c,n}
+    electric: [],     // {id,t,x,y}
+    plumbing: [],     // {id,t,x,y}
+    decor: { wallColor: WALL_COLORS[0], floor: FLOOR_TYPES[0].id },
+    customPrices: {}, // {key: цена}
+  };
+}
+
+/* ---------- Шаблоны типовых квартир ---------- */
+function tplRect(W, H) {
+  const th = 20;
+  return [
+    { a: { x: 0, y: 0 }, b: { x: W, y: 0 }, th, kind: 'load', state: 'existing', openings: [] },
+    { a: { x: W, y: 0 }, b: { x: W, y: H }, th, kind: 'load', state: 'existing', openings: [] },
+    { a: { x: W, y: H }, b: { x: 0, y: H }, th, kind: 'load', state: 'existing', openings: [] },
+    { a: { x: 0, y: H }, b: { x: 0, y: 0 }, th, kind: 'load', state: 'existing', openings: [] },
+  ];
+}
+function mkWalls(arr) { return arr.map(w => ({ id: uid(), openings: [], ...w })); }
+
+const TEMPLATES = [
+  {
+    id: 'studio', n: 'Студия 28 м²', d: 'Компактная студия с кухней-нишей',
+    build() {
+      const p = newProject('Студия 28 м²');
+      p.walls = mkWalls([
+        ...tplRect(560, 500),
+        { a: { x: 0, y: 300 }, b: { x: 230, y: 300 }, th: 10, kind: 'partition', state: 'existing' },
+        { a: { x: 230, y: 300 }, b: { x: 230, y: 500 }, th: 10, kind: 'partition', state: 'existing' },
+      ]);
+      p.walls[3].openings.push({ id: uid(), type: 'door', off: 120, w: 90 });   // входная
+      p.walls[4].openings.push({ id: uid(), type: 'door', off: 130, w: 80 });   // в санузел
+      p.walls[0].openings.push({ id: uid(), type: 'window', off: 400, w: 160 });
+      p.furniture = [
+        { id: uid(), t: 'bed160', x: 110, y: 150, rot: 0, w: 160, h: 200, c: '#d96f4a', n: 'Кровать 160' },
+        { id: uid(), t: 'sofa', x: 380, y: 380, rot: 0, w: 200, h: 90, c: '#7fa88f', n: 'Диван' },
+        { id: uid(), t: 'kitchen', x: 400, y: 65, rot: 0, w: 240, h: 60, c: '#e8d9c0', n: 'Кухонный гарнитур' },
+        { id: uid(), t: 'fridge', x: 250, y: 65, rot: 0, w: 60, h: 60, c: '#cfd8dc', n: 'Холодильник' },
+        { id: uid(), t: 'bath', x: 90, y: 440, rot: 0, w: 170, h: 80, c: '#dfe8ee', n: 'Ванна' },
+        { id: uid(), t: 'wc', x: 155, y: 335, rot: 0, w: 45, h: 65, c: '#dfe8ee', n: 'Унитаз' },
+      ];
+      p.electric = [
+        { id: uid(), t: 'socket', x: 480, y: 260 }, { id: uid(), t: 'socket', x: 330, y: 140 },
+        { id: uid(), t: 'switch', x: 260, y: 420 }, { id: uid(), t: 'lamp', x: 380, y: 320 },
+        { id: uid(), t: 'lamp', x: 150, y: 300 }, { id: uid(), t: 'panel', x: 60, y: 440 },
+      ];
+      p.plumbing = [
+        { id: uid(), t: 'sink', x: 350, y: 100 }, { id: uid(), t: 'water', x: 360, y: 60 },
+        { id: uid(), t: 'sewer', x: 200, y: 300 },
+      ];
+      return p;
+    },
+  },
+  {
+    id: 'one', n: 'Однокомнатная 38 м²', d: 'Кухня, комната и санузел',
+    build() {
+      const p = newProject('Однокомнатная 38 м²');
+      p.walls = mkWalls([
+        ...tplRect(620, 560),
+        { a: { x: 0, y: 240 }, b: { x: 300, y: 240 }, th: 10, kind: 'partition', state: 'existing' },
+        { a: { x: 300, y: 240 }, b: { x: 300, y: 560 }, th: 10, kind: 'partition', state: 'existing' },
+        { a: { x: 300, y: 380 }, b: { x: 620, y: 380 }, th: 10, kind: 'partition', state: 'existing' },
+      ]);
+      p.walls[3].openings.push({ id: uid(), type: 'door', off: 140, w: 90 });
+      p.walls[4].openings.push({ id: uid(), type: 'door', off: 170, w: 85 });
+      p.walls[6].openings.push({ id: uid(), type: 'door', off: 60, w: 80 });
+      p.walls[0].openings.push({ id: uid(), type: 'window', off: 460, w: 170 });
+      p.walls[1].openings.push({ id: uid(), type: 'window', off: 130, w: 150 });
+      p.furniture = [
+        { id: uid(), t: 'bed160', x: 140, y: 140, rot: 0, w: 160, h: 200, c: '#d96f4a', n: 'Кровать 160' },
+        { id: uid(), t: 'wardrobe', x: 420, y: 80, rot: 0, w: 150, h: 60, c: '#a8b8d0', n: 'Шкаф' },
+        { id: uid(), t: 'kitchen', x: 120, y: 300, rot: 0, w: 240, h: 60, c: '#e8d9c0', n: 'Кухонный гарнитур' },
+        { id: uid(), t: 'table', x: 160, y: 440, rot: 0, w: 140, h: 80, c: '#d9b98f', n: 'Обеденный стол' },
+        { id: uid(), t: 'sofa', x: 440, y: 480, rot: 0, w: 200, h: 90, c: '#7fa88f', n: 'Диван' },
+        { id: uid(), t: 'tvstand', x: 440, y: 410, rot: 0, w: 160, h: 45, c: '#b9a184', n: 'ТВ-тумба' },
+        { id: uid(), t: 'bath', x: 480, y: 90, rot: 0, w: 170, h: 80, c: '#dfe8ee', n: 'Ванна' },
+        { id: uid(), t: 'washer', x: 400, y: 300, rot: 0, w: 60, h: 60, c: '#cfd8dc', n: 'Стиральная машина' },
+      ];
+      p.electric = [
+        { id: uid(), t: 'socket', x: 240, y: 130 }, { id: uid(), t: 'socket2', x: 130, y: 340 },
+        { id: uid(), t: 'socket', x: 460, y: 440 }, { id: uid(), t: 'switch', x: 320, y: 260 },
+        { id: uid(), t: 'lamp', x: 150, y: 140 }, { id: uid(), t: 'lamp', x: 460, y: 480 },
+        { id: uid(), t: 'lamp', x: 160, y: 420 }, { id: uid(), t: 'panel', x: 70, y: 500 },
+      ];
+      p.plumbing = [
+        { id: uid(), t: 'sink', x: 130, y: 320 }, { id: uid(), t: 'water', x: 560, y: 130 },
+        { id: uid(), t: 'sewer', x: 560, y: 160 }, { id: uid(), t: 'wc', x: 380, y: 320 },
+      ];
+      return p;
+    },
+  },
+  {
+    id: 'two', n: 'Двухкомнатная 52 м²', d: 'Две комнаты, кухня-гостиная',
+    build() {
+      const p = newProject('Двухкомнатная 52 м²');
+      p.walls = mkWalls([
+        ...tplRect(720, 680),
+        { a: { x: 380, y: 0 }, b: { x: 380, y: 320 }, th: 10, kind: 'partition', state: 'existing' },
+        { a: { x: 380, y: 320 }, b: { x: 720, y: 320 }, th: 10, kind: 'partition', state: 'existing' },
+        { a: { x: 0, y: 420 }, b: { x: 380, y: 420 }, th: 10, kind: 'partition', state: 'existing' },
+        { a: { x: 380, y: 460 }, b: { x: 720, y: 460 }, th: 10, kind: 'partition', state: 'existing' },
+      ]);
+      p.walls[3].openings.push({ id: uid(), type: 'door', off: 130, w: 90 });
+      p.walls[4].openings.push({ id: uid(), type: 'door', off: 60, w: 85 });
+      p.walls[5].openings.push({ id: uid(), type: 'door', off: 200, w: 85 });
+      p.walls[6].openings.push({ id: uid(), type: 'door', off: 120, w: 85 });
+      p.walls[7].openings.push({ id: uid(), type: 'door', off: 200, w: 80 });
+      p.walls[0].openings.push({ id: uid(), type: 'window', off: 190, w: 150 });
+      p.walls[0].openings.push({ id: uid(), type: 'window', off: 550, w: 150 });
+      p.walls[2].openings.push({ id: uid(), type: 'window', off: 520, w: 160 });
+      p.furniture = [
+        { id: uid(), t: 'bed160', x: 150, y: 150, rot: 0, w: 160, h: 200, c: '#d96f4a', n: 'Кровать 160' },
+        { id: uid(), t: 'desk', x: 320, y: 60, rot: 0, w: 120, h: 60, c: '#d9b98f', n: 'Рабочий стол' },
+        { id: uid(), t: 'sofa', x: 530, y: 130, rot: 0, w: 200, h: 90, c: '#7fa88f', n: 'Диван' },
+        { id: uid(), t: 'kitchen', x: 500, y: 380, rot: 0, w: 240, h: 60, c: '#e8d9c0', n: 'Кухонный гарнитур' },
+        { id: uid(), t: 'table', x: 200, y: 550, rot: 0, w: 140, h: 80, c: '#d9b98f', n: 'Обеденный стол' },
+        { id: uid(), t: 'bed90', x: 560, y: 560, rot: 0, w: 90, h: 200, c: '#e08a68', n: 'Кровать 90' },
+        { id: uid(), t: 'wardrobe', x: 60, y: 650, rot: 0, w: 150, h: 60, c: '#a8b8d0', n: 'Шкаф' },
+        { id: uid(), t: 'bath', x: 640, y: 510, rot: 0, w: 170, h: 80, c: '#dfe8ee', n: 'Ванна' },
+      ];
+      p.electric = [
+        { id: uid(), t: 'socket', x: 250, y: 150 }, { id: uid(), t: 'socket2', x: 520, y: 420 },
+        { id: uid(), t: 'socket', x: 560, y: 100 }, { id: uid(), t: 'socket', x: 620, y: 560 },
+        { id: uid(), t: 'switch', x: 400, y: 340 }, { id: uid(), t: 'lamp', x: 190, y: 170 },
+        { id: uid(), t: 'lamp', x: 550, y: 170 }, { id: uid(), t: 'lamp', x: 550, y: 390 },
+        { id: uid(), t: 'lamp', x: 200, y: 540 }, { id: uid(), t: 'panel', x: 60, y: 640 },
+      ];
+      p.plumbing = [
+        { id: uid(), t: 'sink', x: 520, y: 400 }, { id: uid(), t: 'water', x: 680, y: 500 },
+        { id: uid(), t: 'sewer', x: 680, y: 540 }, { id: uid(), t: 'wc', x: 480, y: 510 },
+      ];
+      return p;
+    },
+  },
+];
+
+/* =====================================================================
+   Приложение: состояние, рендер 2D, интерактив
+   ===================================================================== */
+const App = {
+  P: null,
+  mode: 'walls', tool: 'select',
+  view: 'plan',
+  s: .55, ox: 80, oy: 80,                    // масштаб (px/см) и сдвиг
+  sel: null, hover: null,                    // {kind:'wall'|'furnit'|'electric'|'plumbing', id}
+  drag: null, wallStart: null, mouse: null,
+  preset: { th: 10, kind: 'partition' },
+  furnitureTool: 'sofa', electricTool: 'socket', plumbingTool: 'sink',
+  layers: { grid: true, walls: true, openings: true, furniture: true, electric: true, plumbing: true, dims: true },
+  undo: [], redo: [], saveTimer: null,
+};
+
+const cv = $('#cv'), ctx = cv.getContext('2d');
+let CW = 800, CH = 600, DPR = 1;
+
+function resizeCanvas() {
+  const r = cv.getBoundingClientRect();
+  if (!r.width) return;
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  CW = r.width; CH = r.height;
+  cv.width = Math.round(CW * DPR); cv.height = Math.round(CH * DPR);
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  draw();
+}
+window.addEventListener('resize', () => { resizeCanvas(); if (App.view === '3d') Three.resize(); });
+
+const W2S = p => ({ x: p.x * App.s + App.ox, y: p.y * App.s + App.oy });
+const S2W = p => ({ x: (p.x - App.ox) / App.s, y: (p.y - App.oy) / App.s });
+const pxToCm = px => px / App.s;
+
+function currentWall() { return App.P?.walls.find(w => w.id === App.sel?.id); }
+function selectedObject() {
+  if (!App.sel || !App.P) return null;
+  const arr = { wall: 'walls', furniture: 'furniture', electric: 'electric', plumbing: 'plumbing' }[App.sel.kind];
+  return arr ? App.P[arr].find(o => o.id === App.sel.id) : null;
+}
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._tm); t._tm = setTimeout(() => t.classList.remove('show'), 2400);
+}
+function hint(msg) { $('#hintbar').textContent = msg; }
+
+/* ---------- История и сохранение ---------- */
+function snapshot() { return JSON.stringify(App.P); }
+function restore(snap) { App.P = JSON.parse(snap); refreshAll(); }
+function mutate(fn, skipRender) {
+  if (!App.P) return;
+  App.undo.push(snapshot()); if (App.undo.length > 80) App.undo.shift();
+  App.redo = [];
+  fn(App.P);
+  App.P.updatedAt = Date.now();
+  scheduleSave(); refreshAll(skipRender);
+}
+function undo() {
+  if (!App.undo.length) return toast('Нечего отменять');
+  App.redo.push(snapshot()); restore(App.undo.pop()); scheduleSave();
+}
+function redo() {
+  if (!App.redo.length) return toast('Нечего повторять');
+  App.undo.push(snapshot()); restore(App.redo.pop()); scheduleSave();
+}
+function scheduleSave() {
+  $('#saveState').textContent = '… Сохранение';
+  clearTimeout(App.saveTimer);
+  App.saveTimer = setTimeout(() => {
+    Store.save(App.P);
+    $('#saveState').textContent = '✓ Сохранено в браузере';
+  }, 600);
+}
+
+/* ---------- Вход в редактор и навигация ---------- */
+App.goHome = function () { if (App.P) Store.save(App.P); $('#app').classList.add('hidden'); $('#landing').classList.remove('hidden'); window.scrollTo(0, 0); };
+App.enterEditor = function (demo) {
+  $('#landing').classList.add('hidden'); $('#app').classList.remove('hidden');
+  resizeCanvas();
+  if (demo) { loadProject(TEMPLATES[0].build()); return; }
+  const recent = Object.values(Store.all()).sort((a, b) => b.updatedAt - a.updatedAt)[0];
+  if (recent) loadProject(recent); else { loadProject(newProject(), true); showTemplates(); }
+};
+function loadProject(p, skipTour = false) {
+  App.P = p; App.undo = []; App.redo = []; App.sel = null; App.wallStart = null;
+  $('#projName').value = p.name;
+  setMode('walls'); setView('plan');
+  fitView(); refreshAll(); scheduleSave();
+  if (!skipTour && !localStorage.getItem('domplan.tourDone')) setTimeout(() => { if (!$('.overlay')) showTour(); }, 450);
+}
+function refreshAll(skipRender) { renderPanel(); if (!skipRender) draw(); if (App.view === 'estimate') renderEstimate(); }
+
+App.setView = setView;
+function setView(v) {
+  App.view = v;
+  $$('.view').forEach(el => el.classList.remove('active'));
+  cv.style.display = v === 'plan' ? 'block' : 'none';
+  $('.stage-tools').style.display = v === 'plan' ? 'flex' : 'none';
+  $('.hintbar').style.display = v === 'plan' ? 'block' : 'none';
+  if (v === '3d') { $('#view3d').classList.add('active'); Three.build(); }
+  if (v === 'estimate') { $('#viewEstimate').classList.add('active'); renderEstimate(); }
+  if (v === 'catalog') { $('#viewCatalog').classList.add('active'); renderCatalog(); }
+  buildRail();
+}
+
+/* ---------- Левая панель режимов ---------- */
+const RAIL = [
+  { id: 'walls', n: 'Стены', ico: '📐' },
+  { id: 'furniture', n: 'Мебель', ico: '🛋️' },
+  { id: 'electric', n: 'Электрика', ico: '⚡' },
+  { id: 'plumbing', n: 'Сантехника', ico: '🚿' },
+  { id: 'layers', n: 'Слои', ico: '👁️' },
+  { sep: true },
+  { id: '3d', n: '3D-вид', ico: '🧊', view: true },
+  { id: 'estimate', n: 'Смета', ico: '💰', view: true },
+  { id: 'catalog', n: 'Каталог', ico: '🛍️', view: true },
+];
+function buildRail() {
+  $('#rail').innerHTML = RAIL.map(r => r.sep ? '<div class="rail-sep"></div>' :
+    `<button class="rail-btn ${App.view === (r.view ? r.id : 'plan') && (r.view || App.mode === r.id) ? 'active' : ''}" data-id="${r.id}" title="${r.n}">
+       <span class="ico">${r.ico}</span>${r.n}</button>`).join('');
+  $$('#rail .rail-btn').forEach(b => b.onclick = () => {
+    const r = RAIL.find(x => x.id === b.dataset.id);
+    if (r.view) setView(r.id); else { setView('plan'); setMode(r.id); }
+  });
+}
+function setMode(mode) {
+  App.mode = mode; App.sel = null; App.wallStart = null;
+  App.tool = mode === 'layers' ? 'select' : 'select';
+  buildRail(); renderPanel(); draw(); updateHint();
+}
+
+/* ---------- Геометрия ---------- */
+function wallLen(w) { return dist(w.a, w.b); }
+function projectOnWall(w, p) {
+  const dx = w.b.x - w.a.x, dy = w.b.y - w.a.y, l2 = dx * dx + dy * dy;
+  const t = l2 ? clamp(((p.x - w.a.x) * dx + (p.y - w.a.y) * dy) / l2, 0, 1) : 0;
+  return { x: w.a.x + dx * t, y: w.a.y + dy * t, t, off: Math.sqrt(l2) * t };
+}
+function distToWall(w, p) { return dist(projectOnWall(w, p), p); }
+function wallAt(p, tol = 16) {
+  if (!App.P) return null;
+  let best = null, bd = tol;
+  for (const w of App.P.walls) { const d = distToWall(w, p); if (d < bd + w.th / 2) { bd = d; best = w; } }
+  return best;
+}
+function rectAt(p, arr) {
+  for (let i = arr.length - 1; i >= 0; i--) {
+    const o = arr[i], a = -(o.rot || 0) * Math.PI / 180;
+    const dx = p.x - o.x, dy = p.y - o.y;
+    const rx = dx * Math.cos(a) - dy * Math.sin(a), ry = dx * Math.sin(a) + dy * Math.cos(a);
+    if (Math.abs(rx) <= o.w / 2 + 4 && Math.abs(ry) <= o.h / 2 + 4) return o;
+  }
+  return null;
+}
+function pointAt(p, arr, r = 18) {
+  for (let i = arr.length - 1; i >= 0; i--) if (dist(arr[i], p) < r) return arr[i];
+  return null;
+}
+function bounds() {
+  const pts = [];
+  App.P?.walls.forEach(w => pts.push(w.a, w.b));
+  if (!pts.length) App.P?.furniture.forEach(o => pts.push({ x: o.x, y: o.y }));
+  if (!pts.length) return { x0: 0, y0: 0, x1: 600, y1: 500 };
+  const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
+  return { x0: Math.min(...xs), y0: Math.min(...ys), x1: Math.max(...xs), y1: Math.max(...ys) };
+}
+function fitView() {
+  const b = bounds(), m = 90;
+  const w = b.x1 - b.x0 || 600, h = b.y1 - b.y0 || 500;
+  App.s = clamp(Math.min((CW - m * 2) / w, (CH - m * 2) / h), .12, 1.6);
+  App.ox = CW / 2 - (b.x0 + b.x1) / 2 * App.s;
+  App.oy = CH / 2 - (b.y0 + b.y1) / 2 * App.s;
+  draw();
+}
+function snap(p, free) { return free ? p : { x: Math.round(p.x / 5) * 5, y: Math.round(p.y / 5) * 5 }; }
+
+/* ---------- Отрисовка ---------- */
+function draw() {
+  if (!App.P || App.view !== 'plan') return;
+  ctx.clearRect(0, 0, CW, CH);
+  if (App.layers.grid) drawGrid();
+  if (App.layers.walls) drawWalls();
+  if (App.layers.furniture) App.P.furniture.forEach(o => drawFurniture(o));
+  if (App.layers.electric) App.P.electric.forEach(o => drawPoint(o, '#c2821d', ELECTRICS.find(e => e.t === o.t)?.sym || '●'));
+  if (App.layers.plumbing) App.P.plumbing.forEach(o => drawPoint(o, '#4e86ad', PLUMBING.find(e => e.t === o.t)?.sym || '●'));
+  drawSelection();
+  drawGhost();
+  if (App.mouse) drawCoords();
+}
+
+function drawGrid() {
+  const steps = [10, 25, 50, 100, 250, 500, 1000];
+  const step = steps.find(s => s * App.s >= 55) || 1000;
+  const tl = S2W({ x: 0, y: 0 }), br = S2W({ x: CW, y: CH });
+  ctx.lineWidth = 1;
+  for (let x = Math.floor(tl.x / step) * step; x <= br.x; x += step) {
+    const sx = Math.round(x * App.s + App.ox) + .5;
+    ctx.strokeStyle = x % (step * 5) === 0 ? '#e0d2b6' : '#eaddc7';
+    ctx.beginPath(); ctx.moveTo(sx, 0); ctx.lineTo(sx, CH); ctx.stroke();
+    if (step * App.s >= 55) { ctx.fillStyle = '#bfb096'; ctx.font = '10px Nunito'; ctx.fillText((x / 100) + ' м', sx + 4, 14); }
+  }
+  for (let y = Math.floor(tl.y / step) * step; y <= br.y; y += step) {
+    const sy = Math.round(y * App.s + App.oy) + .5;
+    ctx.strokeStyle = y % (step * 5) === 0 ? '#e0d2b6' : '#eaddc7';
+    ctx.beginPath(); ctx.moveTo(0, sy); ctx.lineTo(CW, sy); ctx.stroke();
+    if (step * App.s >= 55) { ctx.fillStyle = '#bfb096'; ctx.font = '10px Nunito'; ctx.fillText((y / 100) + ' м', 4, sy - 3); }
+  }
+}
+
+function drawWalls() {
+  const S = App.s;
+  // мягкая заливка пола в обводке стен
+  const b = bounds();
+  ctx.save();
+  ctx.fillStyle = '#fffaf0';
+  const p0 = W2S({ x: b.x0, y: b.y0 }), p1 = W2S({ x: b.x1, y: b.y1 });
+  if (App.P.walls.length) ctx.fillRect(p0.x, p0.y, p1.x - p0.x, p1.y - p0.y);
+  ctx.restore();
+
+  for (const w of App.P.walls) {
+    const col = WALL_TYPES[w.state].color;
+    const a = W2S(w.a), b2 = W2S(w.b), L = wallLen(w), lw = Math.max(3, w.th * S);
+    ctx.save();
+    ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.lineCap = 'butt';
+    if (w.state === 'demolition') ctx.setLineDash([12, 8]);
+    const ops = App.layers.openings ? [...w.openings].sort((o1, o2) => o1.off - o2.off) : [];
+    let cursor = 0;
+    const strokePart = (f, t) => {
+      if (t - f < .5) return;
+      const p = wallPoint(w, f), q = wallPoint(w, t), ps = W2S(p), qs = W2S(q);
+      ctx.beginPath(); ctx.moveTo(ps.x, ps.y); ctx.lineTo(qs.x, qs.y); ctx.stroke();
+    };
+    for (const op of ops) {
+      const from = clamp(op.off - op.w / 2, 0, L), to = clamp(op.off + op.w / 2, 0, L);
+      strokePart(cursor, from); cursor = to;
+      drawOpening(w, op, col, lw);
+    }
+    strokePart(cursor, L);
+    ctx.restore();
+    if (App.layers.dims) drawDim(w);
+  }
+}
+function wallPoint(w, off) {
+  const l = wallLen(w) || 1;
+  return { x: w.a.x + (w.b.x - w.a.x) * off / l, y: w.a.y + (w.b.y - w.a.y) * off / l };
+}
+function drawOpening(w, op, col, lw) {
+  const S = App.s, from = op.off - op.w / 2;
+  const p = W2S(wallPoint(w, from)), q = W2S(wallPoint(w, from + op.w));
+  const ang = Math.atan2(q.y - p.y, q.x - p.x);
+  if (op.type === 'window') {
+    ctx.save(); ctx.strokeStyle = '#fffaf0'; ctx.lineWidth = lw + 2;
+    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+    ctx.strokeStyle = '#7ba7c7'; ctx.lineWidth = Math.max(1.5, lw * .16);
+    for (const d of [-lw * .28, lw * .28]) {
+      const nx = Math.cos(ang + Math.PI / 2) * d, ny = Math.sin(ang + Math.PI / 2) * d;
+      ctx.beginPath(); ctx.moveTo(p.x + nx, p.y + ny); ctx.lineTo(q.x + nx, q.y + ny); ctx.stroke();
+    }
+    ctx.restore();
+  } else if (op.type === 'door') {
+    // дверь проёмом + дуга открывания
+    const leaf = op.w * S, r = Math.min(34, leaf);
+    const hinge = p, openAng = ang - Math.PI / 2;
+    ctx.save(); ctx.strokeStyle = '#a58d70'; ctx.lineWidth = Math.max(1.5, 2 * S * 4);
+    ctx.beginPath(); ctx.moveTo(hinge.x, hinge.y); ctx.lineTo(hinge.x + Math.cos(openAng) * leaf, hinge.y + Math.sin(openAng) * leaf); ctx.stroke();
+    ctx.strokeStyle = '#c1aa8c'; ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(q.x, q.y);
+    ctx.arc(hinge.x, hinge.y, leaf, ang, openAng, true); ctx.stroke();
+    ctx.restore();
+  }
+}
+function drawDim(w) {
+  if (w.state === 'demolition') return;
+  const S = App.s, L = wallLen(w), m = segMidOff(w, 0);
+  const a = W2S(w.a), b = W2S(w.b), c = W2S(m);
+  const nx = -(b.y - a.y), ny = b.x - a.x, nl = Math.hypot(nx, ny) || 1;
+  const off = Math.max(14, w.th * S / 2 + 9);
+  const x = c.x + nx / nl * off, y = c.y + ny / nl * off;
+  const label = (L / 100).toFixed(2).replace(/\.00$/, '').replace('.', ',') + ' м';
+  ctx.save();
+  if (S > .25) {
+    ctx.font = '700 11px Nunito';
+    const tw = ctx.measureText(label).width;
+    ctx.fillStyle = 'rgba(255,250,240,.92)'; ctx.fillRect(x - tw / 2 - 4, y - 8, tw + 8, 16);
+    ctx.fillStyle = w.state === 'new' ? '#4f8a63' : '#968267';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, x, y);
+  }
+  ctx.strokeStyle = w.state === 'new' ? '#4f8a63' : '#a8977a'; ctx.lineWidth = 1.3;
+  for (const p of [a, b]) {
+    ctx.beginPath();
+    ctx.moveTo(p.x - nx / nl * 5 + b.x / (Math.hypot(b.x - a.x, b.y - a.y) || 1) * 0, p.y - ny / nl * 5);
+    ctx.lineTo(p.x + nx / nl * 5, p.y + ny / nl * 5); ctx.stroke();
+  }
+  ctx.restore();
+}
+function roundRectPath(c, x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r);
+  c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+}
+function drawFurniture(o) {
+  const p = W2S(o), w = o.w * App.s, h = o.h * App.s;
+  ctx.save(); ctx.translate(p.x, p.y); ctx.rotate((o.rot || 0) * Math.PI / 180);
+  const def = FURNITURE.find(f => f.t === o.t);
+  if (def?.round) {
+    ctx.fillStyle = o.c; ctx.globalAlpha = .8; ctx.beginPath(); ctx.arc(0, 0, w / 2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#a9c8b2'; ctx.beginPath(); ctx.arc(-w * .08, -h * .08, w * .32, 0, Math.PI * 2); ctx.fill();
+  } else {
+    if (def?.soft) ctx.globalAlpha = .65;
+    ctx.fillStyle = o.c || '#c9c2b5'; roundRectPath(ctx, -w / 2, -h / 2, w, h, Math.min(8, w / 6)); ctx.fill();
+    ctx.globalAlpha = 1; ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(61,52,40,.16)'; ctx.stroke();
+    if (o.t === 'bed160' || o.t === 'bed90') {
+      ctx.fillStyle = 'rgba(255,255,255,.65)'; roundRectPath(ctx, -w / 2 + 3, -h / 2 + 3, w - 6, Math.min(h / 4, 30), 5); ctx.fill();
+    }
+    if (o.t === 'sofa' || o.t === 'armchair') {
+      ctx.fillStyle = 'rgba(0,0,0,.13)'; ctx.fillRect(-w / 2 + 3, h / 2 - Math.min(h * .45, 15), w - 6, Math.min(h * .35, 12));
+    }
+    if (o.t === 'wc') { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(0, h * .08, w * .28, h * .3, 0, 0, Math.PI * 2); ctx.fill(); }
+    if (o.t === 'bath') { ctx.fillStyle = '#fff'; roundRectPath(ctx, -w / 2 + 4, -h / 2 + 4, w - 8, h - 8, 12); ctx.fill(); }
+  }
+  if (App.s > .3 && w > 28 && h > 17) {
+    ctx.fillStyle = '#3d3428'; ctx.globalAlpha = .8;
+    ctx.font = `800 ${clamp(Math.min(w / 7, h / 3), 8, 12)}px Nunito`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(o.n, 0, 0, Math.max(20, w - 8));
+  }
+  ctx.restore();
+  if (App.sel?.kind === 'furniture' && App.sel.id === o.id) {
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate((o.rot || 0) * Math.PI / 180);
+    ctx.strokeStyle = '#d96f4a'; ctx.lineWidth = 2; ctx.setLineDash([5, 4]);
+    ctx.strokeRect(-w / 2 - 4, -h / 2 - 4, w + 8, h + 8); ctx.restore();
+  }
+}
+function drawPoint(o, col, sym) {
+  const p = W2S(o), r = clamp(11 * App.s / .55, 7, 14);
+  ctx.save();
+  ctx.fillStyle = '#fffdf8'; ctx.strokeStyle = col; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = col; ctx.font = `900 ${r * 1.25}px Nunito`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(sym, p.x, p.y + .5);
+  if (App.sel && App.sel.id === o.id && (App.sel.kind === 'electric' || App.sel.kind === 'plumbing')) {
+    ctx.strokeStyle = '#d96f4a'; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.arc(p.x, p.y, r + 5, 0, Math.PI * 2); ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawSelection() {
+  const w = currentWall(); if (!w) return;
+  const a = W2S(w.a), b = W2S(w.b);
+  ctx.save(); ctx.strokeStyle = '#d96f4a'; ctx.lineWidth = Math.max(3, w.th * App.s) + 7;
+  ctx.globalAlpha = .22; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+  ctx.globalAlpha = 1; ctx.setLineDash([]);
+  for (const p of [w.a, w.b]) {
+    const sp = W2S(p); ctx.fillStyle = '#fff'; ctx.strokeStyle = '#d96f4a'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(sp.x, sp.y, 7, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawGhost() {
+  if (!App.mouse || !App.P) return;
+  const wp = App.wallStart && App.mouseWorld ? App.mouseWorld : S2W(App.mouse);
+  ctx.save();
+  if (App.mode === 'walls' && App.tool === 'wall') {
+    if (App.wallStart) {
+      const a = W2S(App.wallStart), b = W2S(wp);
+      ctx.strokeStyle = '#d96f4a'; ctx.lineWidth = Math.max(3, App.preset.th * App.s); ctx.globalAlpha = .65;
+      ctx.setLineDash([9, 6]); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      ctx.globalAlpha = 1; ctx.setLineDash([]);
+      const label = (dist(App.wallStart, wp) / 100).toFixed(2).replace('.', ',') + ' м';
+      ctx.font = '800 13px Nunito'; const tw = ctx.measureText(label).width;
+      ctx.fillStyle = '#3d3428'; roundRectPath(ctx, b.x + 12, b.y - 32, tw + 18, 25, 8); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.fillText(label, b.x + 21, b.y - 19);
+    } else {
+      const sp = W2S(snap(wp));
+      ctx.strokeStyle = '#d96f4a'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(sp.x - 9, sp.y); ctx.lineTo(sp.x + 9, sp.y);
+      ctx.moveTo(sp.x, sp.y - 9); ctx.lineTo(sp.x, sp.y + 9); ctx.stroke();
+    }
+  }
+  if ((App.mode === 'furniture' && App.tool === 'furniture') || (App.mode === 'electric' && App.tool === 'electric') || (App.mode === 'plumbing' && App.tool === 'plumbing')) {
+    const sn = snap(wp), sp = W2S(sn);
+    ctx.fillStyle = '#d96f4a'; ctx.globalAlpha = .12; ctx.beginPath(); ctx.arc(sp.x, sp.y, 16, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1; ctx.strokeStyle = '#d96f4a'; ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.arc(sp.x, sp.y, 16, 0, Math.PI * 2); ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawCoords() {
+  const wp = S2W(App.mouse);
+  ctx.save(); ctx.font = '700 10px Nunito'; ctx.fillStyle = '#b3a186'; ctx.textAlign = 'right';
+  ctx.fillText(`X: ${(wp.x / 100).toFixed(2)} м  Y: ${(wp.y / 100).toFixed(2)} м`, CW - 16, CH - 14);
+  ctx.restore();
+}
+
+/* =====================================================================
+   Контекстная панель инструментов
+   ===================================================================== */
+function toolBtn(id, ico, name, small, active) {
+  return `<button class="tool-btn ${active ? 'active' : ''}" data-action="tool" data-tool="${id}">
+    <span class="ico">${ico}</span><span>${name}${small ? `<small>${small}</small>` : ''}</span></button>`;
+}
+function renderPanel() {
+  if (!App.P) return;
+  const el = $('#panel');
+  let h = '';
+  if (App.mode === 'walls') {
+    h += `<h3>📐 Стены и проёмы</h3><div class="tool-list">`;
+    h += toolBtn('select', '👆', 'Выбрать / двигать', 'Кликните по стене', App.tool === 'select');
+    h += toolBtn('wall', '📏', 'Нарисовать стену', 'Два клика: начало и конец', App.tool === 'wall');
+    h += toolBtn('door', '🚪', 'Добавить дверь', 'Кликните в нужное место стены', App.tool === 'door');
+    h += toolBtn('window', '🪟', 'Добавить окно', 'Кликните в нужное место стены', App.tool === 'window');
+    h += toolBtn('arch', '◠', 'Добавить арку', 'Проём без двери', App.tool === 'arch');
+    h += toolBtn('state', '🧱', 'Демонтаж / монтаж', 'Отметить стены на плане', App.tool === 'state');
+    h += `</div>`;
+    if (App.tool === 'wall') {
+      h += `<div class="field">Тип новой стены<select id="wallPreset">${WALL_PRESETS.map((p, i) =>
+        `<option value="${i}" ${p.th === App.preset.th && p.kind === App.preset.kind ? 'selected' : ''}>${p.n}</option>`).join('')}</select></div>`;
+    }
+    if (App.tool === 'state') {
+      h += `<div class="field">Чем отметить стену<div class="seg" id="stateBrush">
+        ${Object.entries(WALL_TYPES).map(([k, v]) => `<button data-state="${k}" class="${App.stateBrush === k ? 'active' : ''}">${v.n}</button>`).join('')}</div></div>
+        <div class="hint">Кликайте по стенам: <b style="color:#c0442b">красный пунктир</b> — под демонтаж, <b style="color:#4f8a63">зелёный</b> — новые перегородки. Получится план перепланировки.</div>`;
+    }
+    const w = currentWall();
+    if (w) {
+      h += `<hr style="border:none;border-top:1px solid var(--line)"><h3>Выбранная стена</h3>
+        <div class="field">Толщина, см<input id="wallTh" type="number" min="5" max="60" step="5" value="${w.th}"></div>
+        <div class="field">Конструкция<select id="wallKind">
+          <option value="load" ${w.kind === 'load' ? 'selected' : ''}>Несущая</option>
+          <option value="partition" ${w.kind === 'partition' ? 'selected' : ''}>Перегородка</option></select></div>
+        <div class="field">Длина, см<input id="wallLen" type="number" min="20" step="5" value="${Math.round(wallLen(w))}"></div>
+        <div class="field">Состояние<div class="seg" id="wallState">
+          ${Object.entries(WALL_TYPES).map(([k, v]) => `<button data-state="${k}" class="${w.state === k ? 'active' : ''}">${v.n}</button>`).join('')}</div></div>`;
+      if (w.openings.length) {
+        h += `<div class="field">Проёмы на стене</div>`;
+        w.openings.forEach(op => {
+          h += `<div style="display:flex;gap:6px;align-items:center;background:var(--cream);padding:8px;border-radius:9px;margin-bottom:6px">
+            <span style="flex:1;font-size:12.5px;font-weight:800">${op.type === 'door' ? '🚪 Дверь' : op.type === 'arch' ? '◠ Арка' : '🪟 Окно'}</span>
+            <input type="number" value="${op.w}" min="40" step="10" data-opw="${op.id}" style="width:56px;padding:5px;border:1.5px solid var(--line);border-radius:6px" title="Ширина, см">
+            <span style="font-size:11px;color:var(--ink2)">см</span>
+            <button data-delop="${op.id}" class="btn-danger" title="Удалить проём">✕</button></div>`;
+        });
+      }
+      h += `<button class="btn btn-soft btn-sm btn-danger" data-action="delete">🗑 Удалить стену</button>`;
+    } else if (App.tool === 'select') {
+      h += `<div class="hint">Кликните по стене, чтобы изменить толщину, длину, отметить её под демонтаж или удалить.<br><br>Тяните за <b>концы</b> стены, чтобы менять форму, за середину — двигать целиком.</div>`;
+    }
+  }
+  if (App.mode === 'furniture') {
+    h += `<h3>🛋️ Мебель</h3><div class="tool-list">`;
+    h += toolBtn('select', '👆', 'Выбрать / двигать', 'Кликните по предмету', App.tool === 'select');
+    h += `</div><div class="hint">Выберите предмет ниже и кликните на план. Размеры задаются в сантиметрах.</div><div class="tool-grid">`;
+    h += FURNITURE.map(f => `<button class="tool-btn ${App.tool === 'furniture' && App.furnitureTool === f.t ? 'active' : ''}"
+      data-action="furn-tool" data-t="${f.t}" style="flex-direction:column;gap:3px;padding:10px 4px;font-size:11.5px">
+      <span class="ico">${f.ico}</span>${f.n}<small>${f.w}×${f.h}</small></button>`).join('');
+    h += `</div>`;
+    const o = App.sel?.kind === 'furniture' ? selectedObject() : null;
+    if (o) {
+      h += `<hr style="border:none;border-top:1px solid var(--line)"><h3>${o.n}</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field">Ширина, см<input id="furnW" type="number" min="20" step="5" value="${o.w}"></div>
+          <div class="field">Глубина, см<input id="furnH" type="number" min="20" step="5" value="${o.h}"></div></div>
+        <div class="field">Поворот, °<input id="furnRot" type="number" step="15" value="${o.rot || 0}"></div>
+        <div class="seg"><button data-action="rot">↻ Повернуть 90°</button><button data-action="dup">⧉ Дублировать</button></div>
+        <button class="btn btn-soft btn-sm btn-danger" data-action="delete">🗑 Удалить</button>
+        <div class="hint">Горячие клавиши: <b>R</b> — поворот, <b>Delete</b> — удалить.</div>`;
+    }
+  }
+  if (App.mode === 'electric' || App.mode === 'plumbing') {
+    const isE = App.mode === 'electric';
+    const defs = isE ? ELECTRICS : PLUMBING;
+    h += `<h3>${isE ? '⚡ Электрика' : '🚿 Сантехника'}</h3><div class="tool-list">`;
+    h += toolBtn('select', '👆', 'Выбрать / двигать', 'Кликните по точке', App.tool === 'select');
+    h += `</div><div class="hint">${isE ? 'Розетки, выключатели и свет — план для электрика.' : 'Приборы и точки подвода — план для сантехника.'} Кликните по значку, затем по плану.</div><div class="tool-list">`;
+    h += defs.map(d => `<button class="tool-btn ${App.tool === App.mode && (isE ? App.electricTool : App.plumbingTool) === d.t ? 'active' : ''}"
+      data-action="point-tool" data-t="${d.t}"><span class="ico">${d.ico}</span>${d.n}</button>`).join('');
+    h += `</div>`;
+    const o = selectedObject();
+    if (o && (App.sel.kind === 'electric' || App.sel.kind === 'plumbing')) {
+      const d = defs.find(x => x.t === o.t);
+      h += `<hr style="border:none;border-top:1px solid var(--line)"><h3>${d?.ico} ${d?.n}</h3>
+        <div class="hint">Положение: X ${(o.x / 100).toFixed(2)} м, Y ${(o.y / 100).toFixed(2)} м</div>
+        <button class="btn btn-soft btn-sm btn-danger" data-action="delete">🗑 Удалить точку</button>`;
+    }
+  }
+  if (App.mode === 'layers') {
+    const L = App.layers;
+    const rows = [
+      ['grid', 'Сетка и оси'], ['walls', 'Стены'], ['openings', 'Двери и окна'], ['furniture', 'Мебель'],
+      ['electric', 'Электрика'], ['plumbing', 'Сантехника'], ['dims', 'Размеры стен'],
+    ];
+    h += `<h3>👁️ Слои плана</h3><div class="tool-list">`;
+    h += rows.map(([k, n]) => `<div class="layer-row">${n}<div class="switch ${L[k] ? 'on' : ''}" data-layer="${k}"></div></div>`).join('');
+    h += `</div><div class="hint">Например, выключите мебель — получите чистый план электрики для мастера.</div>`;
+    h += `<hr style="border:none;border-top:1px solid var(--line)"><h3>🎨 Отделка (для 3D)</h3>
+      <div class="field">Цвет стен<div class="swatches">${WALL_COLORS.map(c =>
+        `<div class="swatch ${App.P.decor.wallColor === c ? 'active' : ''}" data-wallcolor="${c}" style="background:${c}"></div>`).join('')}</div></div>
+      <div class="field">Пол<select id="floorType">${FLOOR_TYPES.map(f =>
+        `<option value="${f.id}" ${App.P.decor.floor === f.id ? 'selected' : ''}>${f.n}</option>`).join('')}</select></div>`;
+  }
+  el.innerHTML = h;
+  bindPanel();
+  updateHint();
+}
+function updateHint() {
+  const H = {
+    select: 'Клик — выбрать, перетаскивание — двигать · колесо мыши — масштаб · правая кнопка — сдвинуть план',
+    wall: 'Кликните начало стены, затем конец. Shift — свободный угол. После построения длину можно задать точно в см слева.',
+    door: 'Кликните по стене в месте дверного проёма',
+    window: 'Кликните по стене в месте окна',
+    arch: 'Кликните по стене в месте арочного проёма',
+    state: 'Кликайте по стенам, чтобы отметить демонтаж/монтаж',
+    furniture: 'Кликните на плане, чтобы поставить предмет · Esc — закончить',
+    electric: 'Кликните на плане, чтобы поставить точку · Esc — закончить',
+    plumbing: 'Кликните на плане, чтобы поставить прибор · Esc — закончить',
+  };
+  hint(H[App.tool] || 'Выберите инструмент слева');
+}
+function bindPanel() {
+  const P = $('#panel');
+  P.querySelectorAll('[data-action]').forEach(b => b.onclick = () => {
+    const a = b.dataset.action;
+    if (a === 'tool') { App.tool = b.dataset.tool; App.sel = null; App.wallStart = null; if (a === 'state' && !App.stateBrush) App.stateBrush = 'demolition'; renderPanel(); draw(); }
+    if (a === 'furn-tool') { App.tool = 'furniture'; App.furnitureTool = b.dataset.t; renderPanel(); }
+    if (a === 'point-tool') { App.tool = App.mode; App[App.mode === 'electric' ? 'electricTool' : 'plumbingTool'] = b.dataset.t; renderPanel(); }
+    if (a === 'delete') deleteSelection();
+    if (a === 'rot') rotateSelected(90);
+    if (a === 'dup') duplicateSelected();
+  });
+  P.querySelectorAll('[data-layer]').forEach(sw => sw.onclick = () => {
+    const k = sw.dataset.layer; App.layers[k] = !App.layers[k]; sw.classList.toggle('on'); draw();
+  });
+  P.querySelectorAll('[data-wallcolor]').forEach(sw => sw.onclick = () => mutate(p => p.decor.wallColor = sw.dataset.wallcolor));
+  P.querySelectorAll('#stateBrush button, #wallState button').forEach(b => b.onclick = () => {
+    if (b.parentElement.id === 'stateBrush') App.stateBrush = b.dataset.state;
+    else mutate(p => { const w = currentWall(); if (w) w.state = b.dataset.state; });
+    renderPanel();
+  });
+  P.querySelectorAll('[data-opw]').forEach(inp => inp.onchange = () => mutate(() => {
+    const w = currentWall(), op = w?.openings.find(o => o.id === inp.dataset.opw);
+    if (op) op.w = clamp(parseInt(inp.value) || 90, 40, Math.max(40, wallLen(w) - 10));
+  }));
+  P.querySelectorAll('[data-delop]').forEach(b => b.onclick = () => mutate(() => {
+    const w = currentWall(); if (!w) return;
+    w.openings = w.openings.filter(o => o.id !== b.dataset.delop);
+  }));
+  const on = (id, ev, fn) => { const e = P.querySelector(id); if (e) e[ev] = fn; };
+  on('#wallPreset', 'onchange', function () { const pr = WALL_PRESETS[+this.value]; App.preset = { th: pr.th, kind: pr.kind }; });
+  on('#wallTh', 'onchange', function () { mutate(() => { const w = currentWall(); if (w) w.th = clamp(+this.value || 10, 5, 60); }); });
+  on('#wallKind', 'onchange', function () { mutate(() => { const w = currentWall(); if (w) w.kind = this.value; }); });
+  on('#wallLen', 'onchange', function () {
+    const val = +this.value; if (!val || val < 20) return;
+    mutate(() => {
+      const w = currentWall(); if (!w) return;
+      const l = wallLen(w) || 1, k = val / l;
+      w.b = { x: w.a.x + (w.b.x - w.a.x) * k, y: w.a.y + (w.b.y - w.a.y) * k };
+    });
+  });
+  on('#furnW', 'onchange', function () { mutate(() => { const o = selectedObject(); if (o) o.w = Math.max(20, +this.value || 90); }); });
+  on('#furnH', 'onchange', function () { mutate(() => { const o = selectedObject(); if (o) o.h = Math.max(20, +this.value || 90); }); });
+  on('#furnRot', 'onchange', function () { mutate(() => { const o = selectedObject(); if (o) o.rot = ((+this.value || 0) % 360 + 360) % 360; }); });
+  on('#floorType', 'onchange', function () { mutate(p => p.decor.floor = this.value); });
+}
+
+/* =====================================================================
+   Мышь и клавиатура
+   ===================================================================== */
+function evtPos(e) { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+function snapWallPoint(p, free) {
+  if (!free) for (const w of App.P?.walls || []) for (const q of [w.a, w.b]) if (dist(p, q) < 16 / App.s) return { ...q };
+  return snap(p, free);
+}
+function clickWallAction(wp, e) {
+  if (App.tool === 'wall') {
+    if (!App.wallStart) {
+      App.wallStart = snapWallPoint(wp, e.shiftKey);
+      hint('Теперь кликните конец стены · Esc — отмена');
+    } else {
+      const b = rubberEnd(wp, e.shiftKey);
+      if (dist(App.wallStart, b) >= 20) {
+        const a = App.wallStart;
+        mutate(p => p.walls.push({ id: uid(), a, b, th: App.preset.th, kind: App.preset.kind, state: 'existing', openings: [] }));
+        App.sel = { kind: 'wall', id: App.P.walls[App.P.walls.length - 1].id };
+        renderPanel();
+      }
+      App.wallStart = null; updateHint();
+    }
+    return;
+  }
+  if (['door', 'window', 'arch'].includes(App.tool)) {
+    const w = wallAt(wp);
+    if (!w) return toast('Кликните точно по стене');
+    const pr = projectOnWall(w, wp);
+    const len = wallLen(w), ow = Math.min(App.tool === 'door' ? 90 : App.tool === 'arch' ? 120 : 140, len - 10);
+    if (ow < 40) return toast('Стена слишком короткая для проёма');
+    const off = clamp(pr.off, ow / 2 + 5, len - ow / 2 - 5);
+    if (w.openings.some(o => Math.abs(o.off - off) < (o.w + ow) / 2 + 10))
+      return toast('Здесь уже есть проём — выберите другое место');
+    mutate(() => {
+      w.openings.push({ id: uid(), type: App.tool, off, w: ow });
+      w.openings.sort((x, y) => x.off - y.off);
+    });
+    App.sel = { kind: 'wall', id: w.id }; renderPanel();
+    return;
+  }
+  if (App.tool === 'state') {
+    const w = wallAt(wp);
+    if (!w) return toast('Кликните точно по стене');
+    mutate(() => { w.state = App.stateBrush || 'demolition'; });
+    return;
+  }
+  // select
+  const nearEnd = findWallEnd(wp);
+  const w = nearEnd ? nearEnd.w : wallAt(wp);
+  App.sel = w ? { kind: 'wall', id: w.id } : null;
+  if (w) {
+    App.drag = { kind: nearEnd ? 'wall-end' : 'wall', w, end: nearEnd?.end, start: wp, moved: false,
+      orig: { a: { ...w.a }, b: { ...w.b } }, before: snapshot() };
+  }
+  renderPanel(); draw();
+}
+function findWallEnd(wp) {
+  for (const w of App.P.walls) {
+    for (const end of ['a', 'b']) if (dist(w[end], wp) < 12 / App.s + w.th / 2) return { w, end };
+  }
+  return null;
+}
+function rubberEnd(wpRaw, free) {
+  const near = !free && nearExistingEnd(wpRaw);
+  if (near) return { ...near };
+  const a = App.wallStart;
+  if (!a || free) return snap(wpRaw, free);
+  const dx = wpRaw.x - a.x, dy = wpRaw.y - a.y;
+  const ang = Math.atan2(dy, dx), l = Math.hypot(dx, dy);
+  if (!l) return { ...a };
+  const sn = Math.round(ang / (Math.PI / 4)) * Math.PI / 4;
+  return { x: a.x + Math.cos(sn) * l, y: a.y + Math.sin(sn) * l };
+}
+function nearExistingEnd(p) {
+  for (const w of App.P?.walls || []) for (const q of [w.a, w.b]) if (dist(p, q) < 16 / App.s) return q;
+  return null;
+}
+function onDown(e) {
+  if (!App.P || App.view !== 'plan') return;
+  cv.setPointerCapture(e.pointerId);
+  const sp = evtPos(e), wp = S2W(sp);
+  App.mouse = sp;
+  if (e.button === 2 || e.button === 1) {
+    App.pan = { x: sp.x, y: sp.y, ox: App.ox, oy: App.oy };
+    return;
+  }
+  if (App.mode === 'walls') { clickWallAction(wp, e); draw(); return; }
+  if (App.mode === 'furniture') {
+    if (App.tool === 'furniture') {
+      const f = FURNITURE.find(x => x.t === App.furnitureTool), p = snap(wp, e.shiftKey);
+      let id;
+      mutate(pr => {
+        id = uid();
+        pr.furniture.push({ id, t: f.t, n: f.n, x: p.x, y: p.y, rot: 0, w: f.w, h: f.h, c: f.c });
+      });
+      App.sel = { kind: 'furniture', id }; renderPanel(); draw(); return;
+    }
+    const o = App.layers.furniture ? rectAt(wp, App.P.furniture) : null;
+    App.sel = o ? { kind: 'furniture', id: o.id } : null;
+    if (o) App.drag = { kind: 'obj', arr: 'furniture', o, start: wp, orig: { x: o.x, y: o.y }, moved: false, before: snapshot() };
+    renderPanel(); draw(); return;
+  }
+  if (App.mode === 'electric' || App.mode === 'plumbing') {
+    const m = App.mode;
+    if (App.tool === m) {
+      const p = snap(wp, e.shiftKey);
+      const t = m === 'electric' ? App.electricTool : App.plumbingTool;
+      let id;
+      mutate(pr => { id = uid(); pr[m].push({ id, t, x: p.x, y: p.y }); });
+      App.sel = { kind: m, id }; renderPanel(); draw(); return;
+    }
+    // в режиме выбора сантехнику можно тянуть и точки, и санприборы
+    let arr = m, o = pointAt(wp, App.P[m]);
+    if (!o && m === 'plumbing') { o = rectAt(wp, App.P.furniture.filter(f => ['bath', 'wc', 'sink', 'washer'].includes(f.t))); arr = 'furniture'; }
+    App.sel = o ? { kind: arr, id: o.id } : null;
+    if (o) App.drag = { kind: 'obj', arr, o, start: wp, orig: { x: o.x, y: o.y }, moved: false, before: snapshot() };
+    renderPanel(); draw(); return;
+  }
+}
+function onMove(e) {
+  if (!App.P) return;
+  const sp = evtPos(e); App.mouse = sp;
+  const wpRaw = S2W(sp);
+  if (App.pan) {
+    App.ox = App.pan.ox + sp.x - App.pan.x; App.oy = App.pan.oy + sp.y - App.pan.y;
+    draw(); return;
+  }
+  const free = e.shiftKey, d = App.drag;
+  if (d) {
+    if (dist(d.start, wpRaw) * App.s > 3) d.moved = true;
+    if (d.kind === 'obj') {
+      const p = snap({ x: d.orig.x + wpRaw.x - d.start.x, y: d.orig.y + wpRaw.y - d.start.y }, free);
+      d.o.x = p.x; d.o.y = p.y;
+    }
+    if (d.kind === 'wall-end') {
+      const near = !free && nearExistingEnd(wpRaw);
+      d.w[d.end] = near ? { ...near } : snap(wpRaw, free);
+      const L = wallLen(d.w);
+      d.w.openings = d.w.openings.filter(op => op.off - op.w / 2 >= 0 && op.off + op.w / 2 <= L);
+    }
+    if (d.kind === 'wall') {
+      const na = snap({ x: d.orig.a.x + wpRaw.x - d.start.x, y: d.orig.a.y + wpRaw.y - d.start.y }, free);
+      const dx = na.x - d.orig.a.x, dy = na.y - d.orig.a.y;
+      d.w.a = { x: d.orig.a.x + dx, y: d.orig.a.y + dy };
+      d.w.b = { x: d.orig.b.x + dx, y: d.orig.b.y + dy };
+    }
+  }
+  App.mouseWorld = App.wallStart ? rubberEnd(wpRaw, free) : wpRaw;
+  draw();
+}
+function onUp(e) {
+  if (App.pan) { App.pan = null; return; }
+  const d = App.drag;
+  if (d && d.moved) {
+    // правки уже применены визуально — фиксируем историю
+    App.undo.push(d.before); App.redo = [];
+    // стены при перетаскивании целиком переносим по дельте
+    App.P.updatedAt = Date.now(); scheduleSave();
+    renderPanel();
+  }
+  App.drag = null;
+}
+function onWheel(e) {
+  if (App.view !== 'plan') return;
+  e.preventDefault();
+  const sp = evtPos(e), before = S2W(sp);
+  const k = Math.exp(-e.deltaY * .0012);
+  App.s = clamp(App.s * k, .06, 4);
+  App.ox = sp.x - before.x * App.s; App.oy = sp.y - before.y * App.s;
+  draw();
+}
+function deleteSelection() {
+  if (!App.sel) return;
+  const { kind, id } = App.sel;
+  mutate(p => {
+    const arr = { wall: 'walls', furniture: 'furniture', electric: 'electric', plumbing: 'plumbing' }[kind];
+    p[arr] = p[arr].filter(o => o.id !== id);
+  });
+  App.sel = null; renderPanel(); draw();
+}
+function rotateSelected(deg) {
+  if (App.sel?.kind !== 'furniture') return;
+  mutate(() => { const o = selectedObject(); if (o) o.rot = ((o.rot || 0) + deg) % 360; });
+}
+function duplicateSelected() {
+  if (App.sel?.kind !== 'furniture') return;
+  const o = selectedObject(); if (!o) return;
+  let id;
+  mutate(p => { id = uid(); p.furniture.push({ ...o, id, x: o.x + 20, y: o.y + 20 }); });
+  App.sel = { kind: 'furniture', id }; renderPanel();
+}
+
+cv.addEventListener('pointerdown', onDown);
+cv.addEventListener('pointermove', onMove);
+cv.addEventListener('pointerup', onUp);
+cv.addEventListener('pointerleave', () => { App.mouse = null; draw(); });
+cv.addEventListener('wheel', onWheel, { passive: false });
+cv.addEventListener('contextmenu', e => e.preventDefault());
+$('#zoomIn').onclick = () => zoomStep(1.25);
+$('#zoomOut').onclick = () => zoomStep(.8);
+$('#zoomFit').onclick = fitView;
+$('#btnUndo').onclick = undo;
+$('#btnRedo').onclick = redo;
+function zoomStep(k) {
+  const c = { x: CW / 2, y: CH / 2 }, before = S2W(c);
+  App.s = clamp(App.s * k, .06, 4);
+  App.ox = c.x - before.x * App.s; App.oy = c.y - before.y * App.s; draw();
+}
+window.addEventListener('keydown', e => {
+  if ($('#app').classList.contains('hidden')) return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (e.key === 'Escape') appEsc();
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') { e.preventDefault(); redo(); }
+  if (e.key === 'Delete' || e.key === 'Backspace') { deleteSelection(); }
+  if (e.key.toLowerCase() === 'r' || e.key.toLowerCase() === 'к') rotateSelected(15);
+});
+function appEsc() {
+  if (App.tool !== 'select') { App.tool = 'select'; App.wallStart = null; }
+  App.sel = null; renderPanel(); draw();
+}
+
+/* =====================================================================
+   Смета
+   ===================================================================== */
+function furniturePrice(o) {
+  const prod = CATALOG.find(c => c.id === FURN_PRODUCT[o.t]);
+  if (prod) return prod.price;
+  return {
+    tvstand: 9800, table: 12900, desk: 8900, fridge: 32900, washer: 27900,
+    bath: 18900, wc: 8900, sink: 5200, plant: 1500, carpet: 7800,
+  }[o.t] || 5000;
+}
+function priceOf(key) { return App.P.customPrices[key] ?? DEFAULT_PRICES[key]?.price ?? 0; }
+function computeEstimate() {
+  const P = App.P;
+  const sec = [];
+  const add = (name, rows) => { if (rows.length) sec.push({ name, rows }); };
+  const row = (key, qty) => ({ key, label: DEFAULT_PRICES[key].label, unit: DEFAULT_PRICES[key].unit, qty, price: priceOf(key) });
+  const round = (n, d = 1) => Math.round(n * 10 ** d) / 10 ** d;
+
+  const dem = P.walls.filter(w => w.state === 'demolition').reduce((s, w) => s + wallLen(w), 0) / 100;
+  const mnt = P.walls.filter(w => w.state === 'new').reduce((s, w) => s + wallLen(w), 0) / 100;
+  add('Перепланировка', [...(dem > .05 ? [row('demount', round(dem))] : []), ...(mnt > .05 ? [row('mount', round(mnt))] : [])]);
+
+  const b = bounds(), floorArea = P.walls.length ? Math.max(0, (b.x1 - b.x0 - 15) * (b.y1 - b.y0 - 15) / 10000) : 0;
+  const wallM2 = P.walls.filter(w => w.state !== 'demolition').reduce((s, w) => {
+    let area = wallLen(w) / 100 * 2 * 2.7;
+    w.openings.forEach(op => { area -= (op.type === 'door' ? 1.8 : 2.1) * 2; });
+    return s + Math.max(0, area);
+  }, 0);
+  add('Отделка', [
+    ...(wallM2 > 0 ? [row('paint', round(wallM2)), row('paintWork', round(wallM2))] : []),
+    ...(floorArea > 0 ? [row('floor', round(floorArea)), row('floorWork', round(floorArea))] : []),
+  ]);
+
+  const counts = {};
+  P.electric.forEach(e => counts[e.t] = (counts[e.t] || 0) + 1);
+  const elRows = Object.entries(counts).map(([t, n]) => row(t, n));
+  const points = P.electric.length;
+  if (points) elRows.push(row('cableM', round(points * 4.5)));
+  add('Электрика', elRows);
+
+  const plumbingFixtures = P.furniture.filter(f => ['bath', 'wc', 'washer', 'sink'].includes(f.t));
+  const pCounts = {};
+  P.plumbing.forEach(e => pCounts[e.t] = (pCounts[e.t] || 0) + 1);
+  plumbingFixtures.forEach(f => pCounts[f.t] = (pCounts[f.t] || 0) + 1);
+  const plRows = [];
+  const mapPl = { sink: 'sink', bath: 'bath', shower: 'shower', wc: 'wc', washer: 'washerPlumb', water: 'waterPoint', sewer: 'waterPoint' };
+  Object.entries(pCounts).forEach(([t, n]) => { if (mapPl[t]) plRows.push(row(mapPl[t], n)); });
+  add('Сантехника', plRows);
+
+  const fur = {};
+  P.furniture.forEach(f => { if (!fur[f.t]) fur[f.t] = { n: f.n, qty: 0, price: furniturePrice(f) }; fur[f.t].qty++; });
+  const furRows = Object.entries(fur).map(([t, v], i) => ({ key: 'fur_' + t, label: v.n, unit: 'шт.', qty: v.qty, price: App.P.customPrices['fur_' + t] ?? v.price }));
+  add('Мебель', furRows);
+  const total = sec.reduce((sum, s) => sum + s.rows.reduce((x, r) => x + r.qty * r.price, 0), 0);
+  return { sec, total, floorArea, wallM2 };
+}
+function renderEstimate() {
+  const { sec, total, floorArea, wallM2 } = computeEstimate();
+  if (!sec.length) {
+    $('#estTable').innerHTML = `<div style="padding:46px;text-align:center"><div style="font-size:52px">📐</div>
+      <h3 style="font-weight:900;font-size:20px;margin:10px 0">Пока смета пустая</h3>
+      <p style="color:var(--ink2)">Вернитесь к плану: постройте стены, расставьте мебель и инженерные точки.</p></div>`;
+    return;
+  }
+  let html = `<table><thead><tr><th>Наименование</th><th>Ед.</th><th class="num">Кол-во</th><th class="num">Цена, ₸</th><th class="num">Сумма, ₸</th></tr></thead><tbody>`;
+  sec.forEach(s => {
+    html += `<tr class="sec"><td colspan="5">${s.name}</td></tr>`;
+    s.rows.forEach(r => {
+      html += `<tr><td>${r.label}</td><td>${r.unit}</td><td class="num">${String(r.qty).replace('.', ',')}</td>
+        <td class="num"><input class="price" data-price="${r.key}" type="number" min="0" step="10" value="${r.price}"></td>
+        <td class="num" style="font-weight:800" id="sum_${r.key}">${fmt(r.qty * r.price)}</td></tr>`;
+    });
+  });
+  html += `</tbody></table><div class="est-total"><span class="lbl">Итого по проекту:</span><span class="val" id="estTotal">${fmt(total)} ₸</span></div>`;
+  $('#estTable').innerHTML = html;
+  $$('#estTable [data-price]').forEach(inp => inp.onchange = () => {
+    const val = Math.max(0, +inp.value || 0);
+    App.P.customPrices[inp.dataset.price] = val;
+    scheduleSave();
+    const est = computeEstimate();
+    $('#estTotal').textContent = fmt(est.total) + ' ₸';
+    est.sec.forEach(s => s.rows.forEach(r => { const c = $('#sum_' + CSS.escape(r.key)); if (c) c.textContent = fmt(r.qty * r.price); }));
+  });
+}
+
+/* =====================================================================
+   Демо-каталог
+   ===================================================================== */
+function renderCatalog() {
+  $('#catGrid').innerHTML = CATALOG.map(c => `<div class="prod">
+    <div class="prod-img" style="background:${c.bg}">${c.img}</div>
+    <div class="prod-body"><span class="prod-cat">${c.cat} · ${c.shop}</span>
+      <span class="prod-name">${c.name}</span><span class="prod-price">${fmt(c.price)} ₸</span>
+      <a class="prod-link" href="#" onclick="App.demoShop('${c.shop}');return false">Перейти в магазин →</a>
+    </div></div>`).join('');
+}
+App.demoShop = shop => toast(`Демо: здесь будет ссылка в «${shop}»`);
+
+/* =====================================================================
+   Экспорт: PNG, CSV, печать/PDF
+   ===================================================================== */
+function download(name, content, mime) {
+  const blob = content instanceof Blob ? content : new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+function exportCSV() {
+  const { sec, total } = computeEstimate();
+  let csv = '﻿Раздел;Наименование;Ед.;Количество;Цена ₸;Сумма ₸\n';
+  sec.forEach(s => {
+    s.rows.forEach(r => { csv += `${s.name};${r.label};${r.unit};${r.qty};${r.price};${Math.round(r.qty * r.price)}\n`; });
+  });
+  csv += `;;;;ИТОГО;${Math.round(total)}\n`;
+  download(`${App.P.name} — смета.csv`, csv, 'text/csv;charset=utf-8');
+  toast('Смета сохранена в CSV');
+}
+function exportPNG() {
+  const out = document.createElement('canvas');
+  out.width = cv.width; out.height = cv.height;
+  const c = out.getContext('2d');
+  c.fillStyle = '#faf5ec'; c.fillRect(0, 0, out.width, out.height);
+  c.drawImage(cv, 0, 0);
+  const s = 16 * Math.min(devicePixelRatio || 1, 2);
+  c.fillStyle = '#3d3428'; c.font = `800 ${s}px Nunito, sans-serif`;
+  c.fillText(App.P.name + ' · ДомПлан', s, s * 1.7);
+  out.toBlob(b => { download(App.P.name + ' — план.png', b); toast('План сохранён в PNG'); });
+}
+function printProject() {
+  const est = computeEstimate();
+  $('#printArea').innerHTML = `<h1 style="font-family:Nunito">${App.P.name}</h1><p>Проект создан в ДомПлане · ${new Date().toLocaleDateString('ru-RU')}</p>
+    <img src="${cv.toDataURL('image/png')}" style="max-width:100%;border:1px solid #ddd">
+    <h2>Смета</h2>${$('#estTable').innerHTML || '<p>Откройте смету в редакторе для расчёта</p>'}
+    <p style="margin-top:18px;font-size:12px">План перепланировки требует согласования в установленном порядке. Расчёт ориентировочный.</p>`;
+  window.print();
+}
+function showExport() {
+  showModal(`<h2>⬇ Экспорт проекта</h2><p class="sub2">Планы и смету можно показать бригаде или сохранить себе.</p>
+    <div class="tool-list">
+      <button class="tool-btn" id="exPng"><span class="ico">🖼️</span><span>План в PNG<small>Текущий вид плана со всеми слоями</small></span></button>
+      <button class="tool-btn" id="exCsv"><span class="ico">📊</span><span>Смета в CSV<small>Откроется в Excel и Google Таблицах</small></span></button>
+      <button class="tool-btn" id="exPrint"><span class="ico">🖨️</span><span>Печать / PDF<small>Через диалог печати браузера</small></span></button>
+    </div>`);
+  $('#exPng').onclick = () => {
+    closeModal();
+    if (App.view !== 'plan') setView('plan');
+    setTimeout(exportPNG, 60);
+  };
+  $('#exCsv').onclick = () => { closeModal(); exportCSV(); };
+  $('#exPrint').onclick = () => {
+    closeModal();
+    if (App.view !== 'estimate') { setView('estimate'); setTimeout(printProject, 60); } else printProject();
+  };
+}
+
+/* =====================================================================
+   Модальные окна, проекты, шаблоны
+   ===================================================================== */
+function showModal(html) {
+  $('#overlayRoot').innerHTML = `<div class="overlay" id="mainOverlay"><div class="modal" style="position:relative">
+    <button class="modal-x" onclick="closeModal()">×</button>${html}</div></div>`;
+  $('#mainOverlay').addEventListener('click', e => { if (e.target.id === 'mainOverlay') closeModal(); });
+}
+function closeModal() { $('#overlayRoot').innerHTML = ''; }
+function tplSvg(id) {
+  const common = `<rect x="0" y="0" width="180" height="104" fill="#f8f1e4"/><g fill="none" stroke="#3d3428" stroke-width="5"><rect x="18" y="12" width="144" height="80" rx="1"/></g>`;
+  if (id === 'empty') return `<svg viewBox="0 0 180 104">${common}<path d="M74 52h32M90 36v32" stroke="#d96f4a" stroke-width="4" stroke-linecap="round"/></svg>`;
+  if (id === 'studio') return `<svg viewBox="0 0 180 104">${common}<path d="M18 48h56M74 48v44" stroke="#7a6c58" stroke-width="3"/><rect x="92" y="62" width="50" height="20" rx="4" fill="#7fa88f"/><rect x="25" y="57" width="30" height="27" rx="4" fill="#d96f4a"/><rect x="84" y="18" width="55" height="13" rx="3" fill="#e8d9c0"/></svg>`;
+  if (id === 'one') return `<svg viewBox="0 0 180 104">${common}<path d="M18 48h74M92 48v44M92 70h70" stroke="#7a6c58" stroke-width="3"/><rect x="28" y="20" width="35" height="22" rx="4" fill="#d96f4a"/><rect x="100" y="76" width="44" height="15" rx="4" fill="#7fa88f"/></svg>`;
+  return `<svg viewBox="0 0 180 104">${common}<path d="M92 12v40M92 52h70M18 66h74M92 78h70" stroke="#7a6c58" stroke-width="3"/><rect x="28" y="20" width="35" height="22" rx="4" fill="#d96f4a"/><rect x="100" y="20" width="44" height="18" rx="4" fill="#7fa88f"/><rect x="28" y="72" width="38" height="18" rx="4" fill="#e8d9c0"/></svg>`;
+}
+function showTemplates() {
+  const cards = [{ id: 'empty', n: 'Пустой проект', d: 'Своя планировка с нуля' }, ...TEMPLATES];
+  showModal(`<h2>Создать проект</h2><p class="sub2">Начните с типовой квартиры — это быстрее. Размеры можно менять.</p>
+    <div class="tpl-grid">${cards.map(t => `<div class="tpl-card" data-tpl="${t.id}">${tplSvg(t.id)}<h4>${t.n}</h4><p>${t.d}</p></div>`).join('')}</div>`);
+  $$('[data-tpl]').forEach(c => c.onclick = () => {
+    const t = c.dataset.tpl;
+    const p = t === 'empty' ? newProject('Мой проект') : TEMPLATES.find(x => x.id === t).build();
+    closeModal(); loadProject(p);
+  });
+}
+function showProjects() {
+  const list = Object.values(Store.all()).sort((a, b) => b.updatedAt - a.updatedAt);
+  showModal(`<h2>📁 Мои проекты</h2><p class="sub2">Хранятся локально в этом браузере.</p>
+    <button class="btn btn-primary btn-sm" id="projNew" style="margin-bottom:18px">+ Новый проект</button>
+    <div>${list.length ? list.map(p => `<div class="proj-row">
+      <span class="nm" title="${p.name.replace(/"/g, '&quot;')}">${p.name}</span>
+      <span class="dt">${new Date(p.updatedAt).toLocaleDateString('ru-RU')}</span>
+      <button class="btn btn-soft btn-sm" data-open="${p.id}">Открыть</button>
+      <button class="btn btn-soft btn-sm" data-dup="${p.id}" title="Дублировать">⧉</button>
+      <button class="btn btn-soft btn-sm btn-danger" data-del="${p.id}" title="Удалить">🗑</button>
+    </div>`).join('') : '<div class="hint">Пока нет сохранённых проектов. Начните с шаблона</div>'}</div>`);
+  $('#projNew').onclick = showTemplates;
+  $$('[data-open]').forEach(b => b.onclick = () => {
+    if (App.P) Store.save(App.P);
+    const p = Store.all()[b.dataset.open]; if (p) { closeModal(); loadProject(p); }
+  });
+  $$('[data-dup]').forEach(b => b.onclick = () => {
+    const p = JSON.parse(JSON.stringify(Store.all()[b.dataset.dup]));
+    p.id = uid(); p.name += ' — копия'; p.updatedAt = Date.now();
+    Store.save(p); closeModal(); loadProject(p); toast('Проект продублирован');
+  });
+  $$('[data-del]').forEach(b => b.onclick = () => {
+    const p = Store.all()[b.dataset.del];
+    if (!confirm(`Удалить проект «${p.name}»?`)) return;
+    Store.remove(p.id);
+    if (App.P?.id === p.id) { App.P = null; closeModal(); showTemplates(); } else showProjects();
+  });
+}
+
+/* =====================================================================
+   Онбординг
+   ===================================================================== */
+const TOUR = [
+  { ico: '👋', t: 'Добро пожаловать в ДомПлан!', d: 'Это ваш личный дизайнер на вечер: начертите квартиру, расставьте мебель и получите план для бригады. Маленький тур займёт 30 секунд.' },
+  { ico: '📐', t: '1. Стены за два клика', d: 'Выберите «Нарисовать стену», кликните начало и конец. Длина и толщина меняются слева. А инструмент «Демонтаж / монтаж» создаст план перепланировки.' },
+  { ico: '🛋️', t: '2. Мебель и инженерия', d: 'Во вкладках «Мебель», «Электрика» и «Сантехника» выбирайте предметы и кликайте по плану. Всё двигается мышкой, R поворачивает мебель, Delete удаляет.' },
+  { ico: '🧊', t: '3. Посмотрите квартиру в 3D', d: 'Одна кнопка превращает чертёж в объёмную квартиру. Цвет стен и пол настраивается в разделе «Слои».' },
+  { ico: '💰', t: '4. Смета и покупки готовы', d: 'Вкладка «Смета» сама считает материалы и работы. Кнопка «Экспорт» сохраняет план в PNG и смету в CSV. Проект автоматически сохраняется в браузере. Удачного ремонта!' },
+];
+function showTour(page = 0) {
+  const p = TOUR[page];
+  showModal(`<div class="tour-emoji">${p.ico}</div><h2 style="text-align:center">${p.t}</h2>
+    <p style="color:var(--ink2);font-size:15px;text-align:center;max-width:480px;margin:12px auto 0">${p.d}</p>
+    <div class="tour-dots">${TOUR.map((_, i) => `<i class="${i === page ? 'on' : ''}"></i>`).join('')}</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <button class="btn btn-soft btn-sm" id="tourSkip">Пропустить тур</button>
+      <button class="btn btn-primary btn-sm" id="tourNext">${page === TOUR.length - 1 ? 'Начать творить →' : 'Дальше →'}</button>
+    </div>`);
+  const done = () => { localStorage.setItem('domplan.tourDone', '1'); closeModal(); };
+  $('#tourSkip').onclick = done;
+  $('#tourNext').onclick = () => page === TOUR.length - 1 ? done() : showTour(page + 1);
+}
+
+/* =====================================================================
+   3D-визуализация на Three.js
+   ===================================================================== */
+const Three = {
+  inited: false,
+  build() {
+    const host = $('#gl');
+    if (typeof THREE === 'undefined') {
+      host.innerHTML = `<div style="display:grid;place-items:center;height:100%;text-align:center;padding:30px">
+        <div><div style="font-size:48px">🧊</div><h3>Для 3D нужен интернет</h3>
+        <p style="color:var(--ink2)">Библиотека Three.js не загрузилась. Проверьте подключение и обновите страницу.</p></div></div>`;
+      return;
+    }
+    if (!this.inited) this.init(); else {
+      host.appendChild(this.renderer.domElement);
+      this.clearScene();
+    }
+    this.resize();
+    this.populate();
+    const b = bounds(), cx = (b.x0 + b.x1) / 200, cz = (b.y0 + b.y1) / 200;
+    const span = Math.max(b.x1 - b.x0, b.y1 - b.y0) / 100;
+    this.controls.target.set(cx, .6, cz);
+    this.camera.position.set(cx + span * 1.15, span * 1.35 + 2, cz + span * 1.35);
+    this.camera.near = .1; this.camera.far = 300;
+    this.camera.updateProjectionMatrix();
+    this.controls.update();
+    this.animate();
+  },
+  init() {
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color('#f5eedf');
+    this.camera = new THREE.PerspectiveCamera(45, 1, .1, 300);
+    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = .85;
+    $('#gl').appendChild(this.renderer.domElement);
+    const hemi = new THREE.HemisphereLight('#fff7e8', '#bfae94', .55);
+    this.scene.add(hemi);
+    const sun = new THREE.DirectionalLight('#fff4e0', .62);
+    sun.position.set(6, 14, 8); sun.castShadow = true;
+    sun.shadow.mapSize.set(2048, 2048);
+    sun.shadow.camera.left = -18; sun.shadow.camera.right = 18;
+    sun.shadow.camera.top = 18; sun.shadow.camera.bottom = -18;
+    this.scene.add(sun);
+    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableDamping = true; this.controls.dampingFactor = .08;
+    this.controls.maxPolarAngle = Math.PI / 2.06;
+    this.controls.minDistance = 1.5; this.controls.maxDistance = 60;
+    this.inited = true; this.running = false;
+  },
+  clearScene() {
+    if (this.root) { this.scene.remove(this.root); this.root.traverse(o => { o.geometry?.dispose(); if (o.material) { (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose()); } }); }
+    this.root = null;
+  },
+  populate() {
+    const P = App.P, b = bounds();
+    const W = (b.x1 - b.x0) / 100, D = (b.y1 - b.y0) / 100;
+    this.clearScene();
+    this.root = new THREE.Group();
+    this.scene.add(this.root);
+    const floorColor = (FLOOR_TYPES.find(f => f.id === P.decor.floor) || FLOOR_TYPES[0]).c;
+    const floorMat = new THREE.MeshLambertMaterial({ color: floorColor });
+    const floor = new THREE.Mesh(new THREE.BoxGeometry(W + .35, .12, D + .35), floorMat);
+    floor.position.set((b.x0 + b.x1) / 200, -.06, (b.y0 + b.y1) / 200);
+    floor.receiveShadow = true;
+    this.root.add(floor);
+
+    const H = 2.7;
+    const wallMat = new THREE.MeshLambertMaterial({ color: P.decor.wallColor });
+    const newMat = new THREE.MeshLambertMaterial({ color: '#c9dece' });
+    const demMat = new THREE.MeshLambertMaterial({ color: '#d97b6c', transparent: true, opacity: .28 });
+    const glassMat = new THREE.MeshLambertMaterial({ color: '#b9d8e8', transparent: true, opacity: .5 });
+    const addWallBox = (w, off, len, y0, h, mat) => {
+      if (len < .005 || h <= 0) return;
+      const pt = wallPoint(w, off);
+      const g = new THREE.BoxGeometry(len / 100, h, w.th / 100);
+      const mesh = new THREE.Mesh(g, mat);
+      mesh.position.set(pt.x / 100, y0 + h / 2, pt.y / 100);
+      mesh.rotation.y = -Math.atan2(w.b.y - w.a.y, w.b.x - w.a.x);
+      mesh.castShadow = true; mesh.receiveShadow = true;
+      this.root.add(mesh);
+    };
+    P.walls.forEach(w => {
+      const L = wallLen(w), mat = w.state === 'new' ? newMat : w.state === 'demolition' ? demMat : wallMat;
+      let cursor = 0;
+      const ops = [...w.openings].sort((o1, o2) => o1.off - o2.off);
+      for (const op of ops) {
+        const from = clamp(op.off - op.w / 2, 0, L), to = clamp(op.off + op.w / 2, 0, L);
+        addWallBox(w, (cursor + from) / 2, from - cursor, 0, H, mat);
+        if (op.type === 'door') addWallBox(w, op.off, op.w, 2.1, H - 2.1, mat);
+        else {
+          addWallBox(w, op.off, op.w, 0, .9, mat);
+          addWallBox(w, op.off, op.w, 2.1, H - 2.1, mat);
+          addWallBox(w, op.off, Math.max(.01, op.w - .12), .92, 1.16, glassMat);
+        }
+        cursor = to;
+      }
+      addWallBox(w, (cursor + L) / 2, L - cursor, 0, H, mat);
+    });
+
+    const heights = {
+      sofa: .8, armchair: .85, tvstand: .5, table: .76, bed160: .48, bed90: .48,
+      wardrobe: 2.1, desk: .76, kitchen: .9, fridge: 1.85, washer: .85,
+      plant: .85, carpet: .015, bath: .58, wc: .44, sink: .85,
+    };
+    P.furniture.forEach(o => {
+      const h = heights[o.t] || .6;
+      const mat = new THREE.MeshLambertMaterial({ color: o.c || '#c9c2b5' });
+      const g = o.t === 'plant' ? new THREE.SphereGeometry(o.w / 200, 12, 10) : new THREE.BoxGeometry(o.w / 100, h, o.h / 100);
+      const m = new THREE.Mesh(g, mat);
+      m.position.set(o.x / 100, o.t === 'plant' ? .75 : h / 2, o.y / 100);
+      m.rotation.y = -(o.rot || 0) * Math.PI / 180;
+      m.castShadow = o.t !== 'carpet'; m.receiveShadow = true;
+      this.root.add(m);
+      if (o.t === 'bed160' || o.t === 'bed90') {
+        const pillow = new THREE.Mesh(new THREE.BoxGeometry(o.w / 100 * .7, .12, .4), new THREE.MeshLambertMaterial({ color: '#fff6e9' }));
+        pillow.position.set(o.x / 100, h + .02, o.y / 100 - o.h / 200 + .25);
+        pillow.rotation.y = m.rotation.y; pillow.castShadow = true;
+        this.root.add(pillow);
+      }
+    });
+    P.electric.filter(e => e.t === 'lamp').slice(0, 8).forEach(e => {
+      const lamp = new THREE.Mesh(new THREE.SphereGeometry(.14, 12, 8), new THREE.MeshBasicMaterial({ color: '#ffdf9b' }));
+      lamp.position.set(e.x / 100, 2.4, e.y / 100);
+      this.root.add(lamp);
+      const light = new THREE.PointLight('#ffd79a', .18, 5);
+      light.position.set(e.x / 100, 2.2, e.y / 100);
+      this.root.add(light);
+    });
+  },
+  resize() {
+    if (!this.inited) return;
+    const r = $('#gl').getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    this.renderer.setSize(r.width, r.height);
+    this.camera.aspect = r.width / r.height;
+    this.camera.updateProjectionMatrix();
+  },
+  animate() {
+    if (App.view !== '3d') { this.running = false; return; }
+    this.running = true;
+    requestAnimationFrame(() => this.animate());
+    this.controls.update();
+    this.renderer.render(this.scene, this.camera);
+  },
+};
+
+/* =====================================================================
+   Привязка UI и запуск
+   ===================================================================== */
+$('#projName').addEventListener('input', function () {
+  if (!App.P) return;
+  App.P.name = this.value.trim() || 'Без названия';
+  App.P.updatedAt = Date.now(); scheduleSave();
+});
+$('#btnProjects').onclick = showProjects;
+$('#btnHelp').onclick = () => showTour();
+$('#btnExportTop').onclick = showExport;
+$('#btnEstCsv').onclick = exportCSV;
+$('#btnEstPrint').onclick = printProject;
+$('#btn3dBack').onclick = () => setView('plan');
+$('#btnEstBack').onclick = () => setView('plan');
+$('#btnCatBack').onclick = () => setView('plan');
+window.closeModal = closeModal;
+window.addEventListener('beforeunload', () => { if (App.P) { App.P.updatedAt = Date.now(); Store.save(App.P); } });
+</script>
+</body>
+</html>
